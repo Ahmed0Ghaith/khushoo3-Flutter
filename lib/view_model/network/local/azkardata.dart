@@ -14,8 +14,8 @@ Future <List<Azkardata>> get()
 async
 {
  var jsonText = await  rootBundle.loadString('assets/localdb/azkar.json');
-  dynamic userMap = jsonDecode(jsonText);
-var azkar =  Azkar.fromJson(userMap).azkar;
+ dynamic userMap = jsonDecode(jsonText);
+ var azkar =  Azkar.fromJson(userMap).azkar;
  
  return azkar.toSet().toList();
 }

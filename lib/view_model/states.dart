@@ -59,8 +59,21 @@ class ErrorUpdateDataState extends BaseStates
   ErrorUpdateDataState(this.error);
 }
 
+//Loding azkar data
+class LodingAzkarDataState extends BaseStates{}
+class SuccessAzkarLoadingDataState extends BaseStates{}
+class ErrorAzkarLoadingDataState extends BaseStates
+{
+  final String error;
+
+  ErrorAzkarLoadingDataState(this.error);
+}
 
 
+//Scrolling azkar
+class ScrollAzkar extends BaseStates{}
+class OnAppearAzkar extends BaseStates{}
 
-
+//Change State OF Search
+class StateChanged extends BaseStates{}
 

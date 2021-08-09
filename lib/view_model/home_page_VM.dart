@@ -1,27 +1,45 @@
+import 'dart:convert';
+import 'dart:ffi';
+import 'package:flutter/material.dart';
+import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:bloc/bloc.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:khushoo3/models/SalatModel.dart';
+import 'package:khushoo3/models/azkarModel.dart';
 import 'package:khushoo3/view_model/states.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter/services.dart';
+
 import 'package:khushoo3/view_model/network/remote/dio_helper.dart';
 class HomePageVM extends Cubit<BaseStates>
 {
   HomePageVM() : super(InitialState());
 
 
+
+
   
 static HomePageVM get(context) => BlocProvider.of(context);
 
 
+int Counter=0;
+bool CounterVisibility=false;
+bool SState=false;
+  bool Isenablesearch=true;
 
 Position?CurrentPosition;
 List<Map>  model=[];
 Database? _database;
- String?  statetext ;
+String?  statetext ;
+List<Azkardata> ? azkarlist=[];
+List<Azkardata> ? list=[];
+List<Azkardata> ? filteredList=[];
+ TextEditingController? controller ;
 
- //Methods
+  //Methods
 
  //CreateDataBase
 void createDatabase() {
@@ -58,8 +76,8 @@ void createDatabase() {
     }
 
 //GetTodayData
-Future<void>  getTodayData ()
-async { 
+Future<void>  getTodayData () async
+{
    emit(LodingTodayDataState());
    statetext="تحميل بيانات الصلاة لليوم";
       var formatter =  DateFormat('dd-MM-yyyy');
@@ -107,7 +125,7 @@ Future<void> insertinDatabase ()async
    
       if (SalatModel.fromJson(value.data).code==200)
         {
-      statetext=" تم تحميل البيانات من الانترنت",
+         statetext=" تم تحميل البيانات من الانترنت",
            emit(SuccessAPILoadingDataState()),
           emit(UpdateDataState()),
           statetext="يتم تحديث المواقيت في قاعدة البيانات",
@@ -141,7 +159,8 @@ Future<void> insertinDatabase ()async
 
   }
 //LocationData
-Future<Position> _determinePosition() async {
+Future<Position> _determinePosition() async
+{
   statetext="يتم تحديد الموقع";
 
   emit(GetGeoLocatorPermission());
@@ -176,8 +195,147 @@ Future<Position> _determinePosition() async {
   emit(SucessLocatorPermission());
   return await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best, forceAndroidLocationManager: true);
 }
- 
- 
- 
+//azkarList
+Future<void> getazkar() async
+{
+  try {
+    statetext='تحميل الاذكار';
+
+    emit(LodingAzkarDataState());
+    var jsonText = await rootBundle.loadString('assets/localdb/azkar.json');
+    dynamic userMap = jsonDecode(jsonText);
+    var azkar = Azkar
+        .fromJson(userMap)
+        .azkar;
+    azkarlist = azkar.toSet().toList();
+    filteredList!.addAll(azkarlist!);
+    statetext='تم تحميل الاذكار';
+onTap();
+    emit(SuccessAzkarLoadingDataState());
+  }catch(ex)
+  {
+
+  }
+}
+//AzkarTapped
+Future<void> azkartapped (Category)async
+{
+  try {
+    list=[];
+    statetext='تحميل الاذكار';
+
+    emit(LodingAzkarDataState());
+
+    azkarlist!.forEach((element) {
+      if (element.category==Category)
+        {
+          list!.add(element);
+        }
+    });
+
+   await onscroll(0);
+    statetext='تم تحميل الاذكار';
+
+    emit(SuccessAzkarLoadingDataState());
+
+  }catch(ex)
+  {
+
+  }
+
+}
+Future<void> onscroll (index) async
+{
+    CounterVisibility=false;
+
+  await Future.delayed(Duration(milliseconds: 600) );
+
+
+
+if(list![index].count!.isNotEmpty)
+  {
+    Counter = int.tryParse(list![index].count!)! ;
+  }else
+
+    {
+      Counter = 1 ;
+    }
+    if (Counter>0)
+    {
+
+    CounterVisibility=true;
+    }else
+    {
+    CounterVisibility=false;
+    }
+
+    emit(ScrollAzkar());
+
+  }
+ Future<void> onTap ()async
+{
+   if (Counter>1)
+   {
+     if (await Vibrate.canVibrate) {
+
+       HapticFeedback.lightImpact();
+
+     }
+     Counter--;
+   }else
+   {
+     if (await Vibrate.canVibrate) {
+
+       HapticFeedback.vibrate();
+
+     }
+     Counter = 0;
+   }
+   emit(OnAppearAzkar());
+ }
+ void searchstate()
+ {
+   SState =!SState;
+
+   search("");
+   controller= TextEditingController();
+   controller?.clear();
+emit(StateChanged());
+
+ }
+ void search(searchtext) {
+   filteredList=[];
+
+   emit(LodingAzkarDataState());
+
+   if (searchtext == "" || searchtext == null)
+   {
+     filteredList!.addAll(azkarlist!);
+   } else {
+     azkarlist!.forEach((element) {
+       if (element.category!.contains(searchtext)) {
+         filteredList!.add(element);
+
+       };
+     }
+
+     );
+     if (filteredList!.length<1)
+       {
+         statetext='لا يوجد اذكار';
+       }
+   emit(SuccessAzkarLoadingDataState());
+   }
+ }
+
+ void OnChangeTap (index)
+  {
+    if (index!=0)
+    {
+      Isenablesearch=false;
+    }
+    emit(StateChanged());
+
+  }
 }
 

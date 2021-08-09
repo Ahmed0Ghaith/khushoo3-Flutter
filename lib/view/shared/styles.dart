@@ -21,3 +21,13 @@ TextStyle LightText ()=>TextStyle(color:LightTextColor,
     fontFamily: 'Kufi'
     ,fontStyle: FontStyle.normal
 );
+TextStyle GrayText ()=>TextStyle(color:Colors.grey,
+    fontSize: 12,
+    fontFamily: 'Kufi'
+    ,fontStyle: FontStyle.normal
+);
+TextStyle AzkarText ()=>TextStyle(color:Colors.white,
+    fontSize: 14,
+    fontFamily: 'Kufi'
+    ,fontStyle: FontStyle.normal
+);
