@@ -1,7 +1,5 @@
-
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:khushoo3/models/azkarModel.dart';
@@ -20,17 +18,13 @@ class azkarslider extends StatelessWidget {
 
         listener: (context, state) {},
         builder: (context, state) {
-       VM =   HomePageVM.get(context);
+       VM= HomePageVM.get(context);
           Azkar =VM!.list!;
           if (Azkar.length > 0) {
             return Padding(
               padding: const EdgeInsets.fromLTRB(0,100,0,70),
               child: Container(
-
-
-
                child:
-
                   Stack(
                   children: [
                      Padding(

@@ -1,6 +1,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:khushoo3/view/modules/qibla.dart';
+import 'package:khushoo3/view/modules/qiblah_compass.dart';
 import 'package:khushoo3/view/shared/colors.dart';
 import 'package:khushoo3/view/shared/styles.dart';
 import 'package:khushoo3/view_model/home_page_VM.dart';
@@ -71,7 +73,7 @@ onTap: (index){
 
                             child: IconButton (  onPressed: (){
                               VM!.Isenablesearch?
-                               VM!.searchstate():null;
+                              VM!.searchstate():null;
                             }, icon: Icon(Icons.search,color: Colors.white,), color: Colors.white,),
                           )
                         ],
@@ -84,13 +86,19 @@ onTap: (index){
 
                       ),
                       child:  Container(
+                        decoration: BoxDecoration(color: Color.fromARGB(15, 255, 255,255) ,),
                         child:  TabBarView(
                           children: [
-                            Container( decoration: BoxDecoration(color: Color.fromARGB(15, 255, 255,255) ,),
+                            Container(
                                 child: azkarBuilder(context)
                             ),
                             Icon(Icons.directions_transit),
-                            Icon(Icons.directions_bike),
+                            Padding(
+                              padding: const EdgeInsets.all(15.0),
+                              child: Container(
+
+                                  child: getQibla()),
+                            ),
                             Icon(Icons.directions_bike),
                             Container(),
 

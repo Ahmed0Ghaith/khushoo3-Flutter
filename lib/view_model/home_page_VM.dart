@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:bloc/bloc.dart';
@@ -7,11 +6,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:khushoo3/models/SalatModel.dart';
 import 'package:khushoo3/models/azkarModel.dart';
+import 'package:khushoo3/view_model/qibla_VM.dart';
 import 'package:khushoo3/view_model/states.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter/services.dart';
+
 
 import 'package:khushoo3/view_model/network/remote/dio_helper.dart';
 class HomePageVM extends Cubit<BaseStates>
@@ -330,6 +330,10 @@ emit(StateChanged());
 
  void OnChangeTap (index)
   {
+   /* if (index!=2)
+      {
+        qiblaVM.get(context).dispose();
+      }*/
     if (index!=0)
     {
       Isenablesearch=false;
