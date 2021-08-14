@@ -330,10 +330,7 @@ emit(StateChanged());
 
  void OnChangeTap (index)
   {
-   /* if (index!=2)
-      {
-        qiblaVM.get(context).dispose();
-      }*/
+ 
     if (index!=0)
     {
       Isenablesearch=false;
