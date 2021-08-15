@@ -41,6 +41,9 @@ dependencies:
   flutter_vibrate: ^1.1.0
   flutter_compass: ^0.6.1
   flutter_qiblah: ^2.0.1
+  just_audio: ^0.9.5
+
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -74,6 +77,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/
+    - assets/music/
     - assets/localdb/azkar.json
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg

@@ -77,3 +77,6 @@ class OnAppearAzkar extends BaseStates{}
 //Change State OF Search
 class StateChanged extends BaseStates{}
 
+//misbahaClicked
+class misbahaClicked extends BaseStates{}
+

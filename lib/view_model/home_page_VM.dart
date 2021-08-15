@@ -4,9 +4,10 @@ import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:khushoo3/models/SalatModel.dart';
 import 'package:khushoo3/models/azkarModel.dart';
-import 'package:khushoo3/view_model/qibla_VM.dart';
+
 import 'package:khushoo3/view_model/states.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:geolocator/geolocator.dart';
@@ -29,7 +30,7 @@ int Counter=0;
 bool CounterVisibility=false;
 bool SState=false;
   bool Isenablesearch=true;
-
+  AudioPlayer?player ;
 Position?CurrentPosition;
 List<Map>  model=[];
 Database? _database;
@@ -246,7 +247,7 @@ Future<void> azkartapped (Category)async
 }
 Future<void> onscroll (index) async
 {
-    CounterVisibility=false;
+
 
   await Future.delayed(Duration(milliseconds: 600) );
 
@@ -278,7 +279,9 @@ if(list![index].count!.isNotEmpty)
    {
      if (await Vibrate.canVibrate) {
 
-       HapticFeedback.lightImpact();
+       player =AudioPlayer();
+       player!.setAsset('assets/music/click.wav');
+       player!.play();
 
      }
      Counter--;

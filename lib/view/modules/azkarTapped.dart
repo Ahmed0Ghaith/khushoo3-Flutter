@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:khushoo3/view/modules/misbaha.dart';
 import 'package:khushoo3/view/modules/qibla.dart';
 import 'package:khushoo3/view/modules/qiblah_compass.dart';
 import 'package:khushoo3/view/shared/colors.dart';
@@ -92,7 +93,8 @@ onTap: (index){
                             Container(
                                 child: azkarBuilder(context)
                             ),
-                            Icon(Icons.directions_transit),
+
+                          Center(child: misbaha()),
                             Padding(
                               padding: const EdgeInsets.all(15.0),
                               child: Container(
