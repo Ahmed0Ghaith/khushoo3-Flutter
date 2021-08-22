@@ -10,28 +10,25 @@ import 'package:khushoo3/view_model/states.dart';
 
 import 'loading_indicator.dart';
 import 'location_error_widget.dart';
-qiblaVM ?VM;
-class getQibla extends StatelessWidget
-{
+
+qiblaVM? VM;
+
+class getQibla extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-
     return BlocProvider(
-
-      create: (BuildContext context)=>qiblaVM()
-      ..startcombass()
-        ..checkLocationStatus()
-      ,
-      child: BlocConsumer <qiblaVM,BaseStates>(
-        listener: (BuildContext context, state) {  },
-        builder: (BuildContext context,  state) {
-          VM=qiblaVM.get(context);
-       return  Container(
+      create: (BuildContext context) => qiblaVM()
+        ..startcombass()
+        ..checkLocationStatus(),
+      child: BlocConsumer<qiblaVM, BaseStates>(
+        listener: (BuildContext context, state) {},
+        builder: (BuildContext context, state) {
+          VM = qiblaVM.get(context);
+          return Container(
             alignment: Alignment.center,
             padding: const EdgeInsets.all(8.0),
             child: StreamBuilder(
-              stream: VM!.locationStreamController!.stream
-              ,
+              stream: VM!.locationStreamController!.stream,
               builder: (context, AsyncSnapshot<LocationStatus> snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting)
                   return LoadingIndicator();
@@ -51,29 +48,25 @@ class getQibla extends StatelessWidget
                         error: "تم رفض الوصول للموقع الي الابد ",
                         callback: VM!.checkLocationStatus,
                       );
-                  // case GeolocationStatus.unknown:
-                  //   return LocationErrorWidget(
-                  //     error: "Unknown Location service error",
-                  //     callback: _checkLocationStatus,
-                  //   );
+                    // case GeolocationStatus.unknown:
+                    //   return LocationErrorWidget(
+                    //     error: "Unknown Location service error",
+                    //     callback: _checkLocationStatus,
+                    //   );
                     default:
                       return Container();
                   }
                 } else {
                   return LocationErrorWidget(
                     error: "من فضلك قم بتفعيل الحصول الموقع",
-                    callback:VM!.checkLocationStatus,
+                    callback: VM!.checkLocationStatus,
                   );
                 }
               },
             ),
           );
-
         },
       ),
     );
-
   }
-
-
 }

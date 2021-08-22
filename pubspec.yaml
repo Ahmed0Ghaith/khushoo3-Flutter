@@ -42,6 +42,9 @@ dependencies:
   flutter_compass: ^0.6.1
   flutter_qiblah: ^2.0.1
   just_audio: ^0.9.5
+  font_awesome_flutter: ^9.1.0
+  url_launcher: ^6.0.9
+  firebase_messaging: ^10.0.5
 
 
 dev_dependencies:

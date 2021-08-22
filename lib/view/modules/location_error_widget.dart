@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 class LocationErrorWidget extends StatelessWidget {
@@ -7,7 +6,6 @@ class LocationErrorWidget extends StatelessWidget {
 
   const LocationErrorWidget({Key? key, this.error, this.callback})
       : super(key: key);
-
 
   @override
   Widget build(BuildContext context) {
@@ -27,8 +25,8 @@ class LocationErrorWidget extends StatelessWidget {
             box,
             Text(
               error!,
-              style: TextStyle(
-                  color: Colors.white, fontWeight: FontWeight.bold),
+              style:
+                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
             ),
             box,
             FloatingActionButton(
