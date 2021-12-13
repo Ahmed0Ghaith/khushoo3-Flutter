@@ -23,6 +23,7 @@ class azkarslider extends StatelessWidget {
 
           if (Azkar.length > 0) {
             return Padding(
+
               padding: const EdgeInsets.fromLTRB(0, 100, 0, 70),
               child: Container(
                 child: Stack(
@@ -68,8 +69,7 @@ class azkarslider extends StatelessWidget {
               ),
             );
           } else {
-            return Expanded(
-                child: Center(
+            return  Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -83,7 +83,7 @@ class azkarslider extends StatelessWidget {
                   )
                 ],
               ),
-            ));
+            );
           }
         });
   }

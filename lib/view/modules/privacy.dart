@@ -61,7 +61,7 @@ class privacy extends StatelessWidget {
 
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   IconButton(onPressed: () {
                     communication.get(context).openFacebook();

@@ -1,3 +1,5 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -9,26 +11,26 @@ import 'package:khushoo3/view/shared/colors.dart';
 import 'package:khushoo3/view_model/home_page_VM.dart';
 import 'package:khushoo3/view_model/states.dart';
 import 'package:khushoo3/view/shared/themes.dart';
-import 'package:carousel_slider/carousel_slider.dart';
-import 'package:khushoo3/view/shared/styles.dart';
+
 
 class HomePage extends StatelessWidget {
   List<Map> Model = [];
-
+  HomePageVM? VM ;
   @override
   Widget build(BuildContext context) {
+
     return home(context);
   }
 
   Widget home(BuildContext context) {
     return BlocProvider(
       create: (BuildContext context) => HomePageVM()
-        ..createDatabase()
-        ..getazkar(),
+        ..getazkar()   ..getTodayData(),
       child: BlocConsumer<HomePageVM, BaseStates>(
         listener: (context, state) {},
         builder: (context, state) {
-          Model = HomePageVM.get(context).model;
+          VM=HomePageVM.get(context);
+          Model =VM!.model;
           return MaterialApp(
               debugShowCheckedModeBanner: false,
               theme: theme,
@@ -42,11 +44,13 @@ class HomePage extends StatelessWidget {
     var s = Model;
 
     return Scaffold(
+
       appBar: AppBar(
         toolbarHeight: 0.3,
         backgroundColor: Golden,
       ),
       body: Container(
+
           decoration: BoxDecoration(
             image: DecorationImage(
               image: AssetImage('assets/images/Background.png'),
@@ -54,6 +58,22 @@ class HomePage extends StatelessWidget {
             ),
           ),
           child: slider()),
+     floatingActionButton: VM!.isload ?  CircularProgressIndicator(strokeWidth: 7,):  Container(
+    height: 40.0,
+    width: 40.0,
+    child: FittedBox(
+    child: FloatingActionButton(
+
+
+        onPressed: () {
+        VM!.deleteDatabase();
+        VM!.getTodayData();
+        },
+        backgroundColor: Golden,
+        child: const Icon(Icons.refresh, size:40,color: Colors.white,),
+    ),) ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.startDocked,
+
     );
   }
 

@@ -1,8 +1,10 @@
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_qiblah/flutter_qiblah.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:khushoo3/view/modules/qibla.dart';
 import 'package:khushoo3/view_model/qibla_VM.dart';
@@ -39,6 +41,15 @@ class getQibla extends StatelessWidget {
                       return QiblahCompassWidget();
 
                     case LocationPermission.denied:
+                      Fluttertoast.showToast(
+                          msg: "يجب السماح للتطبيق بالوصول للموقع ",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          timeInSecForIosWeb: 1,
+                          backgroundColor: Colors.red,
+                          textColor: Colors.white,
+                          fontSize: 16.0
+                      );
                       return LocationErrorWidget(
                         error: "تم رفض الوصول للموقع",
                         callback: VM!.checkLocationStatus,

@@ -1,5 +1,5 @@
+
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:khushoo3/view/shared/colors.dart';
@@ -12,6 +12,16 @@ import 'azkarTapped.dart';
 class slider extends StatelessWidget {
   HijriCalendar? _today;
 
+  List<String> CachedImages =
+  [
+  'assets/images/FR.jpg',
+  'assets/images/SR.jpg',
+  'assets/images/ZH.jpg',
+  'assets/images/AS.jpg',
+  'assets/images/MA.jpg',
+  'assets/images/AS.jpg',
+
+  ];
   List<Map> Model = [];
 
   @override
@@ -20,7 +30,6 @@ class slider extends StatelessWidget {
       listener: (context, state) {},
       builder: (context, state) {
         Model = HomePageVM.get(context).model;
-
         _today = HijriCalendar.now();
         HijriCalendar.setLocal('ar');
         return sliderwidget(state, context);
@@ -29,28 +38,116 @@ class slider extends StatelessWidget {
   }
   //SliderWidget
   Widget sliderwidget(state, context) {
-    return Column(mainAxisSize: MainAxisSize.max, children: [
+    return Column(
+        mainAxisSize: MainAxisSize.max, children: [
       Padding(
         padding: const EdgeInsets.all(10.0),
         child: header(),
       ),
       //CarouselSliderSalatTime
-      Container(child: (() {
-        if (Model.length > 0) {
-          return CarouselSlider(
-              options: CarouselOptions(
-                autoPlay: false,
-                height: 170,
-                enlargeCenterPage: true,
-              ),
-              items: Model.map((item) => Container(
+      Stack(
+
+        children: [
+
+          Container(child: (() {
+            if (Model.length > 0) {
+              return CarouselSlider(
+                  options: CarouselOptions(
+                    autoPlay: false,
+                    height: 170,
+                    enlargeCenterPage: true,
+                  ),
+                  items: Model.map((item) => Container(
+                        child: Container(
+                          margin: EdgeInsets.fromLTRB(2, 5, 2, 5),
+                          child: ClipRRect(
+                              borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                              child: Stack(
+                                children: <Widget>[
+                                  Image.asset(item['Image'],
+                                      fit: BoxFit.cover, width: 1000.0),
+                                  Positioned(
+                                    bottom: 0.0,
+                                    left: 0.0,
+                                    right: 0.0,
+                                    child: Stack(
+                                      children: <Widget>[
+                                        Container(
+                                          height: 50,
+                                          decoration: BoxDecoration(
+                                            gradient: LinearGradient(
+                                              colors: [
+                                                Color.fromARGB(200, 255, 255, 255),
+                                                Color.fromARGB(2, 255, 255, 255)
+                                              ],
+                                              begin: Alignment.bottomRight,
+                                              end: Alignment.bottomLeft,
+                                            ),
+                                          ),
+                                        ),
+                                        Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          mainAxisAlignment: MainAxisAlignment.end,
+                                          children: [
+                                            Container(
+                                              margin: const EdgeInsets.only(
+                                                  left: 20.0, right: 20.0),
+                                              child: Text("${item["Salat"]}",
+                                                  style: TextStyle(
+                                                      fontSize: 35,
+                                                      fontFamily: 'GaliModern')),
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(7.0)),
+                                          child: Container(
+                                              padding: EdgeInsets.all(7),
+                                              decoration: BoxDecoration(
+                                                color: Golden,
+                                              ),
+                                              child: Text(
+                                                  item['Time']
+                                                      .toString()
+                                                      .replaceAll('(EET)', ''),
+                                                  style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: 18.0,
+                                                  ))),
+                                        )
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              )),
+                        ),
+                      )).toList());
+            } else {
+              return CarouselSlider(
+                  options: CarouselOptions(
+                    autoPlay: false,
+                    height: 170,
+                    enlargeCenterPage: true,
+                  ),
+                  items: CachedImages.map((item) => Container(
                     child: Container(
                       margin: EdgeInsets.fromLTRB(2, 5, 2, 5),
                       child: ClipRRect(
                           borderRadius: BorderRadius.all(Radius.circular(10.0)),
                           child: Stack(
                             children: <Widget>[
-                              Image.asset(item['Image'],
+                              Image.asset(item,
                                   fit: BoxFit.cover, width: 1000.0),
                               Positioned(
                                 bottom: 0.0,
@@ -71,69 +168,37 @@ class slider extends StatelessWidget {
                                         ),
                                       ),
                                     ),
-                                    Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Container(
-                                          margin: const EdgeInsets.only(
-                                              left: 20.0, right: 20.0),
-                                          child: Text("${item["Salat"]}",
-                                              style: TextStyle(
-                                                  fontSize: 35,
-                                                  fontFamily: 'GaliModern')),
-                                        ),
-                                      ],
-                                    )
+
                                   ],
                                 ),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(7.0)),
-                                      child: Container(
-                                          padding: EdgeInsets.all(7),
-                                          decoration: BoxDecoration(
-                                            color: Golden,
-                                          ),
-                                          child: Text(
-                                              item['Time']
-                                                  .toString()
-                                                  .replaceAll('(EET)', ''),
-                                              style: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 18.0,
-                                              ))),
-                                    )
-                                  ],
-                                ),
-                              )
+
                             ],
                           )),
                     ),
                   )).toList());
-        } else {
-          return Container(
-            height: 170,
-            child: Expanded(
-                child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircularProgressIndicator(),
-                ],
-              ),
-            )),
-          );
-        }
-      })()),
+            }
+          })()),
+         /* Positioned.fill(
+            child:  Align(
+            alignment: Alignment.bottomLeft,
+            child: Container(
+
+              width: 30,
+              height: 30,
+              decoration: BoxDecoration(
+                  color: Golden,
+                  borderRadius:BorderRadius.circular(50)
+
+              ),child: Icon(Icons.refresh,size: 20,color: Colors.white,),
+
+            ),
+          ),
+          )*/
+
+
+        ],
+      ),
       SizedBox(
         height: 10,
       ),

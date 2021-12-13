@@ -5,6 +5,7 @@ import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:khushoo3/models/SalatModel.dart';
 import 'package:khushoo3/models/azkarModel.dart';
@@ -16,6 +17,7 @@ import 'package:khushoo3/view_model/network/remote/dio_helper.dart';
 
 class HomePageVM extends Cubit<BaseStates> {
   HomePageVM() : super(InitialState());
+  
 
   final CarouselController Ccontroller = CarouselController();
 
@@ -28,7 +30,7 @@ class HomePageVM extends Cubit<BaseStates> {
   bool SState = false;
   bool Isenablesearch = true;
   AudioPlayer? player;
-
+ bool isload = false;
   Position? CurrentPosition;
   List<Map> model = [];
   Database? _database;
@@ -42,11 +44,11 @@ class HomePageVM extends Cubit<BaseStates> {
   //Methods
 
   //CreateDataBase
-  void createDatabase() {
+  Future <void> createDatabase()  async{
     try {
-      emit(CreateDataBaseState());
-      statetext = 'تهيئة قاعدة البيانات';
-      openDatabase(
+    /*  emit(CreateDataBaseState());
+      statetext = 'تهيئة قاعدة البيانات';*/
+     await openDatabase(
         'CalendarCash.db',
         version: 1,
         onCreate: (_database, version) {
@@ -54,33 +56,47 @@ class HomePageVM extends Cubit<BaseStates> {
               .execute(
                   'CREATE TABLE Salattime (HDate TEXT, HMonth TEXT, Date TEXT , Salat TEXT, Time TEXT, Image TEXT)')
               .catchError((error) {
-            statetext = 'خطأ في تهية قاعدة البيانات المحلية';
-            emit(ErrorCreateDataBaseState(error));
+         Fluttertoast.showToast(
+                          msg: "'خطأ في تهية قاعدة البيانات المحلية' ",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          timeInSecForIosWeb: 1,
+                          backgroundColor: Colors.red,
+                          textColor: Colors.white,
+                          fontSize: 16.0
+                      ); /* statetext = 'خطأ في تهية قاعدة البيانات المحلية';
+            emit(ErrorCreateDataBaseState(error));*/
           });
         },
-      ).then((value) => {
+      ).then((value) =>
+       {
             _database = value,
-            emit(SuccessCreateDataBaseState()),
-            statetext = 'تم تهيئة قاعدة البيانات',
-            getTodayData()
+         /*   emit(SuccessCreateDataBaseState()),
+            statetext = 'تم تهيئة قاعدة البيانات',*/
+
           });
     } catch (e) {
       statetext = 'خطأ في تهية قاعدة البيانات المحلية';
       emit(ErrorCreateDataBaseState(e.toString()));
     }
   }
-
 //GetTodayData
   Future<void> getTodayData() async {
-    emit(LodingTodayDataState());
+    try
+    {
+ isload=true;
     statetext = "تحميل بيانات الصلاة لليوم";
+    emit(LodingTodayDataState());
     var formatter = DateFormat('dd-MM-yyyy');
     String formattedDate = formatter.format(DateTime.now());
+if (_database==null)
+await createDatabase();
 
     List value = await _database!
         .rawQuery("SELECT * FROM Salattime  Where Date='$formattedDate' ");
     if (value.length == 0) {
       CurrentPosition = await _determinePosition();
+     
       var position = CurrentPosition;
       if (position != null) {
         await insertinDatabase();
@@ -94,13 +110,32 @@ class HomePageVM extends Cubit<BaseStates> {
     });
     statetext = "تم تحميل البيانات";
     emit(SuccessTodayLoadingDataState());
-  }
+   
+  
+  }catch(e)
+    {
 
+    }finally{
+  isload=false;
+   emit(DeniedGeoLocatorPermission(""));
+    }
+    }
+void deleteDatabase()
+{
+  isload=true;
+  if (_database==null)
+    createDatabase();
+
+  _database!.rawQuery("Delete FROM Salattime ");
+  model=[];
+  emit(LodingAPIDataState());
+}
 //GetDataFromApi
   Future<void> insertinDatabase() async {
+
     emit(LodingAPIDataState());
     statetext = "جار تحميل البيانات من الانترنت...";
-    _database!.rawQuery("Delete FROM Salattime ");
+    deleteDatabase();
     await diohelper
         .getData(
             url: "v1/calendar",
@@ -129,19 +164,22 @@ class HomePageVM extends Cubit<BaseStates> {
                           '("","","${element.date!.gregorian!.date}","المغرب","${element.timings!.maghrib}", "assets/images/MA.jpg"),'
                           '("","","${element.date!.gregorian!.date}","العشاء","${element.timings!.isha}", "assets/images/IS.jpg")');
                     } catch (e) {
+                   
                       statetext = "خطأ اثناء تحميل البيانات من الانترنت";
                       emit(ErrorUpdateDataState(e.toString()));
                     }
                   }),
+                  
                   emit(SuccessUpdateDataState()),
                   statetext = "تم تحديث المواقيت في قاعدة البيانات",
                 }
             })
         .catchError((error) {
+     
       emit(ErrorAPILoadingDataState(error));
     });
+    
   }
-
 //LocationData
   Future<Position> _determinePosition() async {
     statetext = "يتم تحديد الموقع";
@@ -150,19 +188,48 @@ class HomePageVM extends Cubit<BaseStates> {
     bool serviceEnabled;
     LocationPermission permission;
 
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    serviceEnabled = await Geolocator.isLocationServiceEnabled()
+    .catchError((onError){
+
+    });
     if (!serviceEnabled) {
       statetext = "خطأ في الحصول علي الموقع";
+      Fluttertoast.showToast(
+          msg: "خطأ في الحصول علي الموقع",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0
+      );
 
       return Future.error('خدمة الوصول للموقع غير مفعله');
     }
 
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
+      Fluttertoast.showToast(
+          msg: "من فضلك قم بالسماح للوصول للموقع لتحديد مواقيت الصلاة والقبلة ",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0
+      );
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        emit(DeniedGeoLocatorPermission(
-            'من فضلك قم بالسماح للوصول للموقع لتحديد مواقيت الصلاة والقبلة'));
+
+        Fluttertoast.showToast(
+            msg: "من فضلك قم بالسماح للوصول للموقع لتحديد مواقيت الصلاة والقبلة ",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0
+        );
 
         return Future.error(
             'من فضلك قم بالسماح للوصول للموقع لتحديد مواقيت الصلاة والقبلة');
@@ -182,7 +249,6 @@ class HomePageVM extends Cubit<BaseStates> {
         desiredAccuracy: LocationAccuracy.best,
         forceAndroidLocationManager: true);
   }
-
 //azkarList
   Future<void> getazkar() async {
     try {
@@ -197,9 +263,10 @@ class HomePageVM extends Cubit<BaseStates> {
       statetext = 'تم تحميل الاذكار';
       onTap();
       emit(SuccessAzkarLoadingDataState());
-    } catch (ex) {}
-  }
+    } catch (ex) {
 
+    }
+  }
 //AzkarTapped
   Future<void> azkartapped(Category) async {
     try {
@@ -222,6 +289,9 @@ class HomePageVM extends Cubit<BaseStates> {
   }
 
   Future<void> onscroll(index) async {
+   try {
+     
+   
     await Future.delayed(Duration(milliseconds: 600));
 
     if (list![index].count!.isNotEmpty) {
@@ -236,9 +306,14 @@ class HomePageVM extends Cubit<BaseStates> {
     }
 
     emit(ScrollAzkar());
+    } catch (e) {
+   }
   }
 
   Future<void> onTap() async {
+    try {
+      
+    
     player = AudioPlayer();
     player!.setAsset('assets/music/click.wav');
     player!.play();
@@ -249,10 +324,13 @@ class HomePageVM extends Cubit<BaseStates> {
         HapticFeedback.vibrate();
       }
       CounterVisibility = false;
+      
       Ccontroller.nextPage();
       Counter = 0;
     }
     emit(OnAppearAzkar());
+    } catch (e) {
+    }
   }
 
   void searchstate() {
