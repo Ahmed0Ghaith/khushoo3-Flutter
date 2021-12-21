@@ -62,7 +62,7 @@ class communication extends Cubit<BaseStates>
   // Email
   void openEmail() async{
     String ProtocolUrl = "mailto:<devghaith@outlook.com>";
-    String fallbackUrl = "https://www.facebook.com/AhmedGhaithFB";
+    String fallbackUrl = "mailto:devghaith@outlook.com";
     try {
       bool launched = await launch(ProtocolUrl, forceSafariVC: false);
       print("launching..."+ProtocolUrl);

@@ -54,6 +54,7 @@ class privacy extends StatelessWidget {
               SizedBox(height: 20,),
               Text("للتواصل مع المطور"
                 , style: Azkarstyle(), textAlign: TextAlign.center,),
+              SizedBox(height: 10,),
               Text("devghaith@outlook.com"
                 , style: LightText(), textAlign: TextAlign.center,),
 

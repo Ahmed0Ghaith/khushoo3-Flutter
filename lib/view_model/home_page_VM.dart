@@ -120,7 +120,8 @@ await createDatabase();
    emit(DeniedGeoLocatorPermission(""));
     }
     }
-void deleteDatabase()
+  //DeleteDataBase
+  void deleteDatabase()
 {
   isload=true;
   if (_database==null)

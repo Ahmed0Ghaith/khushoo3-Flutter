@@ -14,6 +14,8 @@ import 'package:khushoo3/view/shared/themes.dart';
 
 
 class HomePage extends StatelessWidget {
+    
+
   List<Map> Model = [];
   HomePageVM? VM ;
   @override
@@ -58,9 +60,10 @@ class HomePage extends StatelessWidget {
             ),
           ),
           child: slider()),
-     floatingActionButton: VM!.isload ?  CircularProgressIndicator(strokeWidth: 7,):  Container(
-    height: 40.0,
-    width: 40.0,
+     floatingActionButton: VM!.isload ? Container(height: 30, width: 30, child: CircularProgressIndicator()): 
+      Container(
+    height: 30.0,
+    width: 30.0,
     child: FittedBox(
     child: FloatingActionButton(
 
@@ -70,9 +73,9 @@ class HomePage extends StatelessWidget {
         VM!.getTodayData();
         },
         backgroundColor: Golden,
-        child: const Icon(Icons.refresh, size:40,color: Colors.white,),
+        child: const Icon(Icons.refresh, size:30,color: Colors.white,),
     ),) ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.startDocked,
+      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
 
     );
   }
@@ -96,4 +99,5 @@ class HomePage extends StatelessWidget {
       ],
     );
   }
+
 }
