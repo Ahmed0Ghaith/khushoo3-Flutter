@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +16,8 @@ import 'package:khushoo3/view/shared/themes.dart';
 
 
 class HomePage extends StatelessWidget {
-    
+
+
 
   List<Map> Model = [];
   HomePageVM? VM ;
@@ -59,35 +62,21 @@ class HomePage extends StatelessWidget {
               fit: BoxFit.cover,
             ),
           ),
-          child: slider()),
-     floatingActionButton: VM!.isload ? Container(height: 30, width: 30, child: CircularProgressIndicator()): 
-      Container(
-    height: 30.0,
-    width: 30.0,
-    child: FittedBox(
-    child: FloatingActionButton(
-
-
-        onPressed: () {
-        VM!.deleteDatabase();
-        VM!.getTodayData();
-        },
-        backgroundColor: Golden,
-        child: const Icon(Icons.refresh, size:30,color: Colors.white,),
-    ),) ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
+          child:
+            slider(),
+                    
+          ),
+     
 
     );
   }
 
   Widget mainContainer() {
-    return Stack(
-      children: [
-        Column(mainAxisSize: MainAxisSize.max, children: [
+    return Column(mainAxisSize: MainAxisSize.max, children: [
           //CarouselSliderSalatTime
           Padding(
             padding: const EdgeInsets.all(10.0),
-            child: slider(),
+            child: Container() /*slider()*/,
           ),
 
           SizedBox(
@@ -95,8 +84,8 @@ class HomePage extends StatelessWidget {
           ),
           //Body
           Directionality(textDirection: TextDirection.rtl, child: sliderList())
-        ]),
-      ],
+        ]
+      
     );
   }
 

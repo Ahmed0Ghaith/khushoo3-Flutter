@@ -1,5 +1,8 @@
 import 'dart:convert';
+
 import 'package:carousel_slider/carousel_controller.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:bloc/bloc.dart';
@@ -7,18 +10,29 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:khushoo3/Helpers/NotificationBadge.dart';
+import 'package:khushoo3/models/PushNotification.dart';
 import 'package:khushoo3/models/SalatModel.dart';
 import 'package:khushoo3/models/azkarModel.dart';
+import 'package:khushoo3/view/Componants/ShowToast.dart';
 import 'package:khushoo3/view_model/states.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:khushoo3/view_model/network/remote/dio_helper.dart';
 
-class HomePageVM extends Cubit<BaseStates> {
-  HomePageVM() : super(InitialState());
-  
 
+class HomePageVM extends Cubit<BaseStates> {
+  HomePageVM() : super(InitialState()){
+
+  //  totalNotifications = 0;
+   // registerNotification();
+  }
+  late final FirebaseMessaging _messaging;
+
+  PushNotification? _notificationInfo;
+  late int totalNotifications;
   final CarouselController Ccontroller = CarouselController();
 
   late int currentPage = 0;
@@ -56,15 +70,7 @@ class HomePageVM extends Cubit<BaseStates> {
               .execute(
                   'CREATE TABLE Salattime (HDate TEXT, HMonth TEXT, Date TEXT , Salat TEXT, Time TEXT, Image TEXT)')
               .catchError((error) {
-         Fluttertoast.showToast(
-                          msg: "'خطأ في تهية قاعدة البيانات المحلية' ",
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.BOTTOM,
-                          timeInSecForIosWeb: 1,
-                          backgroundColor: Colors.red,
-                          textColor: Colors.white,
-                          fontSize: 16.0
-                      ); /* statetext = 'خطأ في تهية قاعدة البيانات المحلية';
+        ShortToast( msg:  "'خطأ في تهية قاعدة البيانات المحلية' ",  ); /* statetext = 'خطأ في تهية قاعدة البيانات المحلية';
             emit(ErrorCreateDataBaseState(error));*/
           });
         },
@@ -195,14 +201,9 @@ await createDatabase();
     });
     if (!serviceEnabled) {
       statetext = "خطأ في الحصول علي الموقع";
-      Fluttertoast.showToast(
+      ShortToast(
           msg: "خطأ في الحصول علي الموقع",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0
+         
       );
 
       return Future.error('خدمة الوصول للموقع غير مفعله');
@@ -212,24 +213,14 @@ await createDatabase();
     if (permission == LocationPermission.denied) {
       Fluttertoast.showToast(
           msg: "من فضلك قم بالسماح للوصول للموقع لتحديد مواقيت الصلاة والقبلة ",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0
+         
       );
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
 
-        Fluttertoast.showToast(
+       showToast(
             msg: "من فضلك قم بالسماح للوصول للموقع لتحديد مواقيت الصلاة والقبلة ",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.CENTER,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Colors.red,
-            textColor: Colors.white,
-            fontSize: 16.0
+            
         );
 
         return Future.error(
@@ -333,6 +324,10 @@ await createDatabase();
     } catch (e) {
     }
   }
+  
+  Future<void> PullTORE()async  {
+        deleteDatabase();
+     await  getTodayData(); }
 
   void searchstate() {
     SState = !SState;
@@ -367,4 +362,53 @@ await createDatabase();
   void OnChangeTap(index) {
     currentPage = index;
   }
+
+  /*void registerNotification() async {
+    // 1. Initialize the Firebase app
+    await Firebase.initializeApp();
+
+    // 2. Instantiate Firebase Messaging
+    _messaging = FirebaseMessaging.instance;
+
+    // 3. On iOS, this helps to take the user permissions
+    NotificationSettings settings = await _messaging.requestPermission(
+      alert: true,
+      badge: true,
+      provisional: false,
+      sound: true,
+    );
+
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+        // ...
+
+          // Parse the message received
+          PushNotification notification = PushNotification(
+            title: message.notification?.title,
+            body: message.notification?.body,
+          );
+
+
+            _notificationInfo = notification;
+            totalNotifications++;
+
+        if (_notificationInfo != null) {
+          // For displaying the notification as an overlay
+          showSimpleNotification(
+            Text(_notificationInfo!.title!),
+            leading: NotificationBadge(totalNotifications: _notificationInfo),
+            subtitle: Text(_notificationInfo!.body!),
+            background: Colors.cyan.shade700,
+            duration: Duration(seconds: 2),
+          );
+        }
+      });
+    } else {
+      print('User declined or has not accepted permission');
+    }
+
+      // TODO: handle the received notifications
+
+  }
+   */
 }

@@ -185,9 +185,7 @@ class sliderList extends StatelessWidget {
 //Azkar Builder
   Widget azkarBuilder(context) {
     if (_azkardata.length > 0) {
-      return RefreshIndicator(
-
-          child: ListView.separated(
+      return  ListView.separated(
 
             physics: BouncingScrollPhysics(),
             itemBuilder: (context, index) =>
@@ -197,12 +195,9 @@ class sliderList extends StatelessWidget {
             itemCount: _azkarcategories
                 .toSet()
                 .length,
-          ),
-          onRefresh: () =>
-              Future.delayed(Duration(seconds: 5),
-
-              )
-      );
+          );
+         
+      
     } else {
       return Center(
         child: Column(
