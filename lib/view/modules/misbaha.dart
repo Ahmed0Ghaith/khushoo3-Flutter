@@ -1,8 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:khushoo3/view/shared/colors.dart';
-import 'package:khushoo3/view/shared/styles.dart';
 import 'package:khushoo3/view_model/misbaha_VM.dart';
 import 'package:khushoo3/view_model/states.dart';
 

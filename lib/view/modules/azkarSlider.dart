@@ -1,5 +1,4 @@
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:khushoo3/models/azkarModel.dart';
@@ -45,7 +44,7 @@ class azkarslider extends StatelessWidget {
                           height: MediaQuery.of(context).size.height,
                           autoPlay: false,
                         ),
-                        carouselController: VM!.Ccontroller,
+                         carouselController: VM!.Ccontroller, // TODO: Fix carousel controller API
                       )),
                     ),
                     Visibility(

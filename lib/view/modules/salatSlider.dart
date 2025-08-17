@@ -3,7 +3,6 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:khushoo3/Helpers/NotificationBadge.dart';
-import 'package:khushoo3/view/modules/qiblah_compass.dart';
 import 'package:khushoo3/view/shared/colors.dart';
 import 'package:khushoo3/view/shared/styles.dart';
 import 'package:khushoo3/view_model/home_page_VM.dart';

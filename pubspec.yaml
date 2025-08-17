@@ -18,43 +18,45 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
 
-
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  fluttertoast: ^8.0.8
-  cupertino_icons: ^1.0.2
-  hexcolor: ^2.0.4
-  carousel_slider: ^4.0.0
-  sqflite: ^2.0.0+3
-  path: ^1.8.0
-  path_provider: ^2.0.2
-  dio: ^4.0.0
-  flutter_bloc: ^7.0.1
-  intl: ^0.17.0
-  geolocator: ^7.2.0+1
+  fluttertoast: ^8.2.12
+  cupertino_icons: ^1.0.8
+  hexcolor: ^3.0.1
+  carousel_slider: ^5.1.1
+  sqflite: ^2.4.2
+  path: ^1.9.0
+  path_provider: ^2.1.5
+  dio: ^5.9.0
+  flutter_bloc: ^9.1.1
+  intl: ^0.20.2
+  geolocator: ^13.0.4
   hijri: ^3.0.0
-  flutter_vibrate: ^1.1.0
-  flutter_compass: ^0.6.1
-  flutter_qiblah: ^2.0.1
-  just_audio: ^0.9.5
-  font_awesome_flutter: ^9.1.0
-  url_launcher: ^6.0.9
-  firebase_messaging: ^10.0.5
-  onesignal_flutter: ^3.2.7
-  firebase_core: ^1.2.0
-  overlay_support: ^1.2.1
+  vibration: ^2.0.0
 
-
+  flutter_qiblah: ^3.1.0+1
+  just_audio: ^0.10.4
+  font_awesome_flutter: ^10.9.0
+  url_launcher: ^6.3.2
+  firebase_messaging: ^16.0.0
+  onesignal_flutter: ^5.3.4
+  firebase_core: ^4.0.0
+  overlay_support: ^2.1.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+dependency_overrides:
+  platform: ^3.1.6
+
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -74,8 +76,6 @@ flutter:
     - family: GaliModern
       fonts:
         - asset: assets/fonts/ArbFONTS-GaliModern-Regular.ttf
-
-
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
@@ -101,9 +101,6 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-
-
-
 
   #   - family: Trajan Pro
   #     fonts:

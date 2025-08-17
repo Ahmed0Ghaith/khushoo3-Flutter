@@ -1,22 +1,18 @@
 import 'dart:convert';
 
 import 'package:carousel_slider/carousel_controller.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_vibrate/flutter_vibrate.dart';
-import 'package:bloc/bloc.dart';
+import 'package:vibration/vibration.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:khushoo3/Helpers/NotificationBadge.dart';
 import 'package:khushoo3/models/PushNotification.dart';
 import 'package:khushoo3/models/SalatModel.dart';
 import 'package:khushoo3/models/azkarModel.dart';
 import 'package:khushoo3/view/Componants/ShowToast.dart';
 import 'package:khushoo3/view_model/states.dart';
-import 'package:overlay_support/overlay_support.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
@@ -33,7 +29,7 @@ class HomePageVM extends Cubit<BaseStates> {
 
   PushNotification? _notificationInfo;
   late int totalNotifications;
-  final CarouselController Ccontroller = CarouselController();
+  final CarouselSliderController Ccontroller = CarouselSliderController();
 
   late int currentPage = 0;
 
@@ -238,8 +234,9 @@ await createDatabase();
 
     emit(SucessLocatorPermission());
     return await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.best,
-        forceAndroidLocationManager: true);
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.best,
+        ));
   }
 //azkarList
   Future<void> getazkar() async {
@@ -312,12 +309,11 @@ await createDatabase();
     if (Counter > 1) {
       Counter--;
     } else {
-      if (await Vibrate.canVibrate) {
-        HapticFeedback.vibrate();
+      if (await Vibration.hasVibrator() ?? false) {
+        Vibration.vibrate();
       }
       CounterVisibility = false;
-      
-      Ccontroller.nextPage();
+       Ccontroller.nextPage();
       Counter = 0;
     }
     emit(OnAppearAzkar());

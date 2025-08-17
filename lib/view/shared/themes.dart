@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 ThemeData theme =  ThemeData(
   //ThemeColors
-  backgroundColor:Backgroundcolor,
+  scaffoldBackgroundColor: Backgroundcolor,
   primaryColor:Golden,
   disabledColor:DarkGolden,
     primarySwatch: Colors.amber,
@@ -12,7 +12,7 @@ ThemeData theme =  ThemeData(
     //AppBarTheme
   appBarTheme: AppBarTheme(
 
-    backwardsCompatibility: false,
+
     systemOverlayStyle: SystemUiOverlayStyle(
       statusBarBrightness: Brightness.dark,
       statusBarIconBrightness: Brightness.light,

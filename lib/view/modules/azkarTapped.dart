@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:khushoo3/view/modules/misbaha.dart';
 import 'package:khushoo3/view/modules/privacy.dart';
-import 'package:khushoo3/view/modules/qibla.dart';
 import 'package:khushoo3/view/modules/qiblah_compass.dart';
 import 'package:khushoo3/view/shared/colors.dart';
 import 'package:khushoo3/view/shared/styles.dart';
