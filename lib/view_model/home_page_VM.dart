@@ -1,14 +1,12 @@
 import 'dart:convert';
 
 import 'package:carousel_slider/carousel_controller.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:vibration/vibration.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:khushoo3/models/PushNotification.dart';
 import 'package:khushoo3/models/SalatModel.dart';
 import 'package:khushoo3/models/azkarModel.dart';
 import 'package:khushoo3/view/Componants/ShowToast.dart';
@@ -25,9 +23,7 @@ class HomePageVM extends Cubit<BaseStates> {
   //  totalNotifications = 0;
    // registerNotification();
   }
-  late final FirebaseMessaging _messaging;
 
-  PushNotification? _notificationInfo;
   late int totalNotifications;
   final CarouselSliderController Ccontroller = CarouselSliderController();
 
@@ -138,8 +134,9 @@ await createDatabase();
 
     emit(LodingAPIDataState());
     statetext = "جار تحميل البيانات من الانترنت...";
-    deleteDatabase();
-    await diohelper
+     try{
+     deleteDatabase();
+  final response =  await diohelper
         .getData(
             url: "v1/calendar",
             query: ({
@@ -148,15 +145,15 @@ await createDatabase();
               "method": "5",
               "month": '${DateTime.now().month}',
               "year": '${DateTime.now().year}',
-            }))
-        .then((value) => {
-              if (SalatModel.fromJson(value.data).code == 200)
+            }));
+       
+              if (SalatModel.fromJson(response.data).code == 200)
                 {
-                  statetext = " تم تحميل البيانات من الانترنت",
-                  emit(SuccessAPILoadingDataState()),
-                  emit(UpdateDataState()),
-                  statetext = "يتم تحديث المواقيت في قاعدة البيانات",
-                  SalatModel.fromJson(value.data).data.forEach((element) {
+                  statetext = " تم تحميل البيانات من الانترنت";
+                  emit(SuccessAPILoadingDataState());
+                  emit(UpdateDataState());
+                  statetext = "يتم تحديث المواقيت في قاعدة البيانات";
+                  SalatModel.fromJson(response.data).data.forEach((element) {
                     try {
                       _database!.rawQuery(
                           'INSERT OR REPLACE INTO Salattime(HDate,HMonth,Date, Salat, Time, Image) VALUES'
@@ -171,30 +168,29 @@ await createDatabase();
                       statetext = "خطأ اثناء تحميل البيانات من الانترنت";
                       emit(ErrorUpdateDataState(e.toString()));
                     }
-                  }),
+                  });
                   
-                  emit(SuccessUpdateDataState()),
-                  statetext = "تم تحديث المواقيت في قاعدة البيانات",
+                  emit(SuccessUpdateDataState());
+                  statetext = "تم تحديث المواقيت في قاعدة البيانات";
                 }
-            })
-        .catchError((error) {
-     
-      emit(ErrorAPILoadingDataState(error));
-    });
+            
+       
+     }catch(e){
+      emit(ErrorAPILoadingDataState(e.toString()));
+     }
+    
     
   }
 //LocationData
-  Future<Position> _determinePosition() async {
+  Future<Position?> ? _determinePosition() async {
     statetext = "يتم تحديد الموقع";
-
+try{
     emit(GetGeoLocatorPermission());
     bool serviceEnabled;
     LocationPermission permission;
 
-    serviceEnabled = await Geolocator.isLocationServiceEnabled()
-    .catchError((onError){
-
-    });
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  
     if (!serviceEnabled) {
       statetext = "خطأ في الحصول علي الموقع";
       ShortToast(
@@ -237,6 +233,10 @@ await createDatabase();
         locationSettings: const LocationSettings(
           accuracy: LocationAccuracy.best,
         ));
+  }catch(e){
+    emit(DeniedGeoLocatorPermission(e.toString()));
+    return null;
+  }
   }
 //azkarList
   Future<void> getazkar() async {
@@ -309,7 +309,7 @@ await createDatabase();
     if (Counter > 1) {
       Counter--;
     } else {
-      if (await Vibration.hasVibrator() ?? false) {
+      if (await Vibration.hasVibrator()) {
         Vibration.vibrate();
       }
       CounterVisibility = false;

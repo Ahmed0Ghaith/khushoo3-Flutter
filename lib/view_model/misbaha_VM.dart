@@ -14,7 +14,7 @@ class misbahaVM extends Cubit<BaseStates>
   static misbahaVM get(Context)=>BlocProvider.of(Context);
    int ButtonCounter =0;
    int Counter =0;
-   int Groub = 0;
+   int Group = 0;
   AudioPlayer? player;
 void Clicked ()
 {
@@ -23,7 +23,7 @@ void Clicked ()
      player!.setAsset('assets/music/click.wav');
     player!.play();
     ButtonCounter++;
-    Groub=ButtonCounter~/33;
+    Group =ButtonCounter~/33;
     Counter++;
     if (Counter==33)
       Counter=0;

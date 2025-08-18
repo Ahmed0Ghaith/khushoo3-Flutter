@@ -11,9 +11,9 @@ import 'package:hijri/hijri_calendar.dart';
 import 'azkarTapped.dart';
 
 class slider extends StatelessWidget {
-  HijriCalendar? _today;
 
-  List<String> CachedImages =
+
+  final  CachedImages =<String>
   [
   'assets/images/FR.jpg',
   'assets/images/SR.jpg',
@@ -23,23 +23,21 @@ class slider extends StatelessWidget {
   'assets/images/AS.jpg',
 
   ];
-  List<Map> Model = [];
-HomePageVM ?VM;
+ 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<HomePageVM, BaseStates>(
       listener: (context, state) {},
       builder: (context, state) {
-        VM = HomePageVM.get(context);
-        Model=VM!.model;
-        _today = HijriCalendar.now();
-        HijriCalendar.setLocal('ar');
-        return sliderwidget(state, context);
+        final  VM = HomePageVM.get(context);
+        final  Model = VM.model;
+      final  todayHijri = HijriCalendar.setLocal('ar');
+        return sliderwidget(state, context,todayHijri,Model,VM);
       },
     );
   }
   //SliderWidget
-  Widget sliderwidget(state, context) {
+  Widget sliderwidget(state, context, todayHijri,Model,VM) {
     return Stack(
 
       children: [
@@ -50,7 +48,7 @@ HomePageVM ?VM;
             mainAxisSize: MainAxisSize.max, children: [
           Padding(
             padding: const EdgeInsets.all(10.0),
-            child: header(),
+            child: header(todayHijri),
           ),
           //CarouselSliderSalatTime
 
@@ -217,7 +215,7 @@ HomePageVM ?VM;
     );
   }
   //Header Time
-  Widget header()  {
+  Widget header(todayHijri)  {
     return Row(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -226,11 +224,11 @@ HomePageVM ?VM;
           mainAxisSize: MainAxisSize.max,
           children: [
             Text((() {
-              if (_today == null) {
+              if (todayHijri == null) {
                 return "--";
               }
 
-              return '${_today!.toFormat("MMMM")}';
+              return '${todayHijri!.toFormat("MMMM")}';
             })(), style: Headerstyle()),
           ],
         ),
@@ -238,11 +236,11 @@ HomePageVM ?VM;
           mainAxisSize: MainAxisSize.max,
           children: [
             Text((() {
-              if (_today == null) {
+              if (todayHijri == null) {
                 return "--";
               }
 
-              return '${_today!.toFormat("dd-mm-yyyy")}';
+              return '${todayHijri!.toFormat("dd-mm-yyyy")}';
             })(), style: Headerstyle()),
           ],
         ),
@@ -250,11 +248,11 @@ HomePageVM ?VM;
           mainAxisSize: MainAxisSize.max,
           children: [
             Text((() {
-              if (_today == null) {
+              if (todayHijri == null) {
                 return "--";
               }
 
-              return '${_today!.getDayName()}';
+              return '${todayHijri!.getDayName()}';
             })(), style: Headerstyle()),
           ],
         )

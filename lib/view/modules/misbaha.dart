@@ -5,7 +5,7 @@ import 'package:khushoo3/view_model/misbaha_VM.dart';
 import 'package:khushoo3/view_model/states.dart';
 
 class misbaha extends StatelessWidget {
-  misbahaVM? VM;
+ 
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +14,7 @@ class misbaha extends StatelessWidget {
       child: BlocConsumer<misbahaVM, BaseStates>(
           listener: (context, state) {},
           builder: (context, state) {
-            VM = misbahaVM.get(context);
+        misbahaVM    VM = misbahaVM.get(context);
             return Container(
               child: Center(
                   child: Padding(
@@ -24,7 +24,7 @@ class misbaha extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      '${VM!.Groub}',
+                      '${VM.Group}',
                       style: TextStyle(fontSize: 30, color: Colors.white),
                     ),
                     ClipRRect(
@@ -36,16 +36,16 @@ class misbaha extends StatelessWidget {
                         child: RawMaterialButton(
                             elevation: 0.0,
                             child: Text(
-                              '${VM!.ButtonCounter}',
+                              '${VM.ButtonCounter}',
                               style:
                                   TextStyle(fontSize: 20, color: Colors.white),
                             ),
                             onPressed: () {
-                              VM!.Clicked();
+                              VM.Clicked();
                             }),
                       ),
                     ),
-                    Text('${VM!.Counter}',
+                    Text('${VM.Counter}',
                         style: TextStyle(fontSize: 30, color: Colors.white)),
                   ],
                 ),

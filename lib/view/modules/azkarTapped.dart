@@ -7,42 +7,39 @@ import 'package:khushoo3/view/shared/colors.dart';
 import 'package:khushoo3/view/shared/styles.dart';
 import 'package:khushoo3/view_model/home_page_VM.dart';
 import 'package:khushoo3/view_model/states.dart';
-import 'package:khushoo3/models/azkarModel.dart';
+
 
 import 'azkarSlider.dart';
 
 class sliderList extends StatelessWidget {
 
-  HomePageVM? VM;
-  List<Azkardata> _azkardata = [];
-  List<String> _azkarcategories = [];
 
-  // late final _tabController = TabController(length: 5, vsync: provider);
+
 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<HomePageVM, BaseStates>(
         listener: (context, state) {},
         builder: (context, state) {
-          VM = HomePageVM.get(context);
-          _azkardata = VM!.filteredList!;
-
-          if (_azkardata.length > 0) {
-            _azkardata.forEach((element) {
-              _azkarcategories.add(element.category!);
-            });
+        HomePageVM  VM = HomePageVM.get(context);
+        final  azkardata = VM.filteredList!;
+        final azkarcategories = <String>[];
+        for (final element in azkardata) {
+          if (element.category != null) {
+            azkarcategories.add(element.category!);
           }
-          return Body(context);
+        }
+          return Body(context,VM,azkardata,azkarcategories);
         });
   }
 
-  Widget Body(context) {
+  Widget Body(context,VM,azkardata,azkarcategories) {
     return Expanded(
         child: Stack(
           children: [
             DefaultTabController(
                 length: 5,
-                initialIndex: VM!.currentPage ,
+                initialIndex: VM.currentPage ,
 
                 child: Scaffold(
                     backgroundColor: Colors.black,
@@ -58,7 +55,7 @@ class sliderList extends StatelessWidget {
                         labelPadding: const EdgeInsets.all(0.0),
                         indicatorColor: Golden,
                         onTap: (index) {
-                          VM!.OnChangeTap(index);
+                          VM.OnChangeTap(index);
                         },
                         labelStyle: Headerstyle(),
                         tabs: [
@@ -77,7 +74,7 @@ class sliderList extends StatelessWidget {
                           Container(
                             child: IconButton(
                               onPressed: () {
-                                VM!.currentPage == 0 ? VM!.searchstate():null;
+                                VM.currentPage == 0 ? VM.searchstate():null;
 
 
                               },
@@ -106,7 +103,7 @@ class sliderList extends StatelessWidget {
 
                           physics: NeverScrollableScrollPhysics(),
                           children: [
-                            Container(child: azkarBuilder(context)),
+                            Container(child: azkarBuilder(context,azkardata,azkarcategories)),
                             Center(child: misbaha()),
                             Padding(
                               padding: const EdgeInsets.all(15.0),
@@ -182,16 +179,16 @@ class sliderList extends StatelessWidget {
   }
 
 //Azkar Builder
-  Widget azkarBuilder(context) {
-    if (_azkardata.length > 0) {
+  Widget azkarBuilder(context,azkardata,azkarcategories) {
+    if (azkardata.length > 0) {
       return  ListView.separated(
 
             physics: BouncingScrollPhysics(),
             itemBuilder: (context, index) =>
                 buildZekrItem(
-                    _azkarcategories.toSet().toList()[index], context),
+                    azkarcategories.toSet().toList()[index], context),
             separatorBuilder: (context, index) => Container(),
-            itemCount: _azkarcategories
+            itemCount: azkarcategories
                 .toSet()
                 .length,
           );

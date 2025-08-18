@@ -7,18 +7,18 @@ import 'package:khushoo3/view/shared/styles.dart';
 import 'package:khushoo3/view_model/home_page_VM.dart';
 import 'package:khushoo3/view_model/states.dart';
 
-class azkarslider extends StatelessWidget {
-  List<Azkardata> Azkar = [];
 
-  HomePageVM? VM;
+class azkarslider extends StatelessWidget {
+
+ 
 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<HomePageVM, BaseStates>(
         listener: (context, state) {},
         builder: (context, state) {
-          VM = HomePageVM.get(context);
-          Azkar = VM!.list!;
+         final HomePageVM? VM  = HomePageVM.get(context);
+        List<Azkardata>    Azkar = VM!.list!;
 
           if (Azkar.length > 0) {
             return Padding(
@@ -31,7 +31,7 @@ class azkarslider extends StatelessWidget {
                       padding: const EdgeInsets.fromLTRB(0, 0, 0, 40),
                       child: Container(
                           child: CarouselSlider(
-                        items: Cart(context),
+                        items: Cart(context,Azkar),
                         options: CarouselOptions(
                           initialPage: 0,
                           scrollDirection: Axis.horizontal,
@@ -39,16 +39,16 @@ class azkarslider extends StatelessWidget {
                           scrollPhysics: BouncingScrollPhysics(),
                           enableInfiniteScroll: false,
                           onPageChanged: (index, reason) {
-                            VM!.onscroll(index);
+                            VM.onscroll(index);
                           },
                           height: MediaQuery.of(context).size.height,
                           autoPlay: false,
                         ),
-                         carouselController: VM!.Ccontroller, // TODO: Fix carousel controller API
+                         carouselController: VM.Ccontroller, 
                       )),
                     ),
                     Visibility(
-                      visible: VM!.CounterVisibility,
+                      visible: VM.CounterVisibility,
                       child: Padding(
                         padding: const EdgeInsets.only(bottom: 8),
                         child: Align(
@@ -56,8 +56,8 @@ class azkarslider extends StatelessWidget {
                           child: Container(
                             height: 70,
                             child: FloatingActionButton(
-                              onPressed: () => {VM!.onTap()},
-                              child: Text('${VM!.Counter}'),
+                              onPressed: () => {VM.onTap()},
+                              child: Text('${VM.Counter}'),
                             ),
                           ),
                         ),
@@ -87,7 +87,7 @@ class azkarslider extends StatelessWidget {
         });
   }
 
-  List<Widget> Cart(context) => Azkar.map((item) => Container(
+  List<Widget> Cart(context, Azkar) => Azkar.map((item) => Container(
         width: MediaQuery.of(context).size.width - 80,
         decoration: BoxDecoration(
             border: Border.all(

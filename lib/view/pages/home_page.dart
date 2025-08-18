@@ -14,8 +14,8 @@ class HomePage extends StatelessWidget {
 
 
 
-  List<Map> Model = [];
-  HomePageVM? VM ;
+
+ 
   @override
   Widget build(BuildContext context) {
 
@@ -29,8 +29,6 @@ class HomePage extends StatelessWidget {
       child: BlocConsumer<HomePageVM, BaseStates>(
         listener: (context, state) {},
         builder: (context, state) {
-          VM=HomePageVM.get(context);
-          Model =VM!.model;
           return MaterialApp(
               debugShowCheckedModeBanner: false,
               theme: theme,
@@ -41,8 +39,6 @@ class HomePage extends StatelessWidget {
   }
 
   Widget getpage(state) {
-    var s = Model;
-
     return Scaffold(
 
       appBar: AppBar(
