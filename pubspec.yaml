@@ -1,7 +1,6 @@
 name: khushoo3
 description: Islamic App
 
-
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 version: 1.0.0+1
@@ -26,7 +25,6 @@ dependencies:
   geolocator: ^13.0.4
   hijri: ^3.0.0
   vibration: ^2.0.0
-
   flutter_qiblah: ^3.1.0+1
   just_audio: ^0.10.4
   font_awesome_flutter: ^10.9.0
@@ -38,12 +36,34 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: ^0.14.4
 
+# Add these dependency overrides to fix the archive package issue
 dependency_overrides:
   platform: ^3.1.6
+  archive: ^4.0.7
+  image: ^4.5.4
+  typed_data: ^1.4.0
+  collection: ^1.18.0
+  meta: ^1.17.0
 
-
-
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/Logo.png"
+  min_sdk_android: 21
+  web:
+    generate: true
+    image_path: "assets/images/Logo.png"
+    background_color: "#0e0e0e"
+    theme_color: "#0e0e0e"
+  windows:
+    generate: true
+    image_path: "assets/images/Logo.png"
+    icon_size: 48
+  macos:
+    generate: true
+    image_path: "assets/images/Logo.png"
 
 flutter:
   fonts:
@@ -56,10 +76,10 @@ flutter:
       fonts:
         - asset: assets/fonts/Tajawal-Bold.ttf
         - asset: assets/fonts/Tajawal-Regular.ttf
+        
     - family: GaliModern
       fonts:
         - asset: assets/fonts/ArbFONTS-GaliModern-Regular.ttf
-
 
   uses-material-design: true
 
@@ -67,4 +87,3 @@ flutter:
     - assets/images/
     - assets/music/
     - assets/localdb/azkar.json
-  

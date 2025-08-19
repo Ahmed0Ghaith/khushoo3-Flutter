@@ -1,4 +1,3 @@
-
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,63 +10,59 @@ import 'package:hijri/hijri_calendar.dart';
 import 'azkarTapped.dart';
 
 class slider extends StatelessWidget {
-
-
-  final  CachedImages =<String>
-  [
-  'assets/images/FR.jpg',
-  'assets/images/SR.jpg',
-  'assets/images/ZH.jpg',
-  'assets/images/AS.jpg',
-  'assets/images/MA.jpg',
-  'assets/images/AS.jpg',
-
+  final CachedImages = <String>[
+    'assets/images/FR.jpg',
+    'assets/images/SR.jpg',
+    'assets/images/ZH.jpg',
+    'assets/images/AS.jpg',
+    'assets/images/MA.jpg',
+    'assets/images/AS.jpg',
   ];
- 
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<HomePageVM, BaseStates>(
       listener: (context, state) {},
       builder: (context, state) {
-        final  VM = HomePageVM.get(context);
-        final  Model = VM.model;
-      final  todayHijri = HijriCalendar.setLocal('ar');
-        return sliderwidget(state, context,todayHijri,Model,VM);
+        final VM = HomePageVM.get(context);
+        final Model = VM.model;
+        return sliderwidget(state, context, Model, VM);
       },
     );
   }
-  //SliderWidget
-  Widget sliderwidget(state, context, todayHijri,Model,VM) {
-    return Stack(
 
+  //SliderWidget
+  Widget sliderwidget(state, context, Model, VM) {
+    return Stack(
       children: [
         SizedBox(height: 16.0),
-        NotificationBadge(totalNotifications: VM!.totalNotifications),
+      //  NotificationBadge(totalNotifications: VM!.totalNotifications),
         SizedBox(height: 16.0),
-        Column(
-            mainAxisSize: MainAxisSize.max, children: [
+        Column(mainAxisSize: MainAxisSize.max, children: [
           Padding(
             padding: const EdgeInsets.all(10.0),
-            child: header(todayHijri),
+            child: header(),
           ),
           //CarouselSliderSalatTime
-
-
-                RefreshIndicator(
-              child:   SingleChildScrollView( physics: AlwaysScrollableScrollPhysics(), scrollDirection: Axis.vertical, child:
-           Container(child: (() {
-                if (Model.length > 0) {
-                  return CarouselSlider(
+          RefreshIndicator(
+            child: SingleChildScrollView(
+              physics: AlwaysScrollableScrollPhysics(),
+              scrollDirection: Axis.vertical,
+              child: Container(
+                child: (() {
+                  if (Model.length > 0) {
+                    return CarouselSlider(
                       options: CarouselOptions(
                         autoPlay: false,
                         height: 170,
                         enlargeCenterPage: true,
                       ),
-                      items: Model.map((item) => Container(
+                      items: Model.map<Widget>((item) => Container(
                             child: Container(
                               margin: EdgeInsets.fromLTRB(2, 5, 2, 5),
                               child: ClipRRect(
-                                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10.0)),
                                   child: Stack(
                                     children: <Widget>[
                                       Image.asset(item['Image'],
@@ -83,8 +78,10 @@ class slider extends StatelessWidget {
                                               decoration: BoxDecoration(
                                                 gradient: LinearGradient(
                                                   colors: [
-                                                    Color.fromARGB(200, 255, 255, 255),
-                                                    Color.fromARGB(2, 255, 255, 255)
+                                                    Color.fromARGB(
+                                                        200, 255, 255, 255),
+                                                    Color.fromARGB(
+                                                        2, 255, 255, 255)
                                                   ],
                                                   begin: Alignment.bottomRight,
                                                   end: Alignment.bottomLeft,
@@ -94,15 +91,18 @@ class slider extends StatelessWidget {
                                             Row(
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.center,
-                                              mainAxisAlignment: MainAxisAlignment.end,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
                                               children: [
                                                 Container(
                                                   margin: const EdgeInsets.only(
                                                       left: 20.0, right: 20.0),
-                                                  child: Text("${item["Salat"]}",
+                                                  child: Text(
+                                                      "${item["Salat"]}",
                                                       style: TextStyle(
                                                           fontSize: 35,
-                                                          fontFamily: 'GaliModern')),
+                                                          fontFamily:
+                                                              'GaliModern')),
                                                 ),
                                               ],
                                             )
@@ -113,7 +113,8 @@ class slider extends StatelessWidget {
                                         padding: const EdgeInsets.all(8.0),
                                         child: Row(
                                           mainAxisSize: MainAxisSize.min,
-                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
                                           children: [
                                             ClipRRect(
                                               borderRadius: BorderRadius.all(
@@ -126,7 +127,8 @@ class slider extends StatelessWidget {
                                                   child: Text(
                                                       item['Time']
                                                           .toString()
-                                                          .replaceAll('(EET)', ''),
+                                                          .replaceAll(
+                                                              '(EET)', ''),
                                                       style: TextStyle(
                                                         color: Colors.black,
                                                         fontSize: 18.0,
@@ -138,84 +140,71 @@ class slider extends StatelessWidget {
                                     ],
                                   )),
                             ),
-                          )).toList());
-                } else {
-                  return CarouselSlider(
+                          )).toList(),
+                    );
+                  } else {
+                    return CarouselSlider(
                       options: CarouselOptions(
                         autoPlay: false,
                         height: 170,
                         enlargeCenterPage: true,
                       ),
-                      items: CachedImages.map((item) => Container(
-                        child: Container(
-                          margin: EdgeInsets.fromLTRB(2, 5, 2, 5),
-                          child: ClipRRect(
-                              borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                              child: Stack(
-                                children: <Widget>[
-                                  Image.asset(item,
-                                      fit: BoxFit.cover, width: 1000.0),
-                                  Positioned(
-                                    bottom: 0.0,
-                                    left: 0.0,
-                                    right: 0.0,
-                                    child: Stack(
-                                      children: <Widget>[
-                                        Container(
-                                          height: 50,
-                                          decoration: BoxDecoration(
-                                            gradient: LinearGradient(
-                                              colors: [
-                                                Color.fromARGB(200, 255, 255, 255),
-                                                Color.fromARGB(2, 255, 255, 255)
-                                              ],
-                                              begin: Alignment.bottomRight,
-                                              end: Alignment.bottomLeft,
+                      items: CachedImages.map<Widget>((item) => Container(
+                            child: Container(
+                              margin: EdgeInsets.fromLTRB(2, 5, 2, 5),
+                              child: ClipRRect(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10.0)),
+                                  child: Stack(
+                                    children: <Widget>[
+                                      Image.asset(item,
+                                          fit: BoxFit.cover, width: 1000.0),
+                                      Positioned(
+                                        bottom: 0.0,
+                                        left: 0.0,
+                                        right: 0.0,
+                                        child: Stack(
+                                          children: <Widget>[
+                                            Container(
+                                              height: 50,
+                                              decoration: BoxDecoration(
+                                                gradient: LinearGradient(
+                                                  colors: [
+                                                    Color.fromARGB(
+                                                        200, 255, 255, 255),
+                                                    Color.fromARGB(
+                                                        2, 255, 255, 255)
+                                                  ],
+                                                  begin: Alignment.bottomRight,
+                                                  end: Alignment.bottomLeft,
+                                                ),
+                                              ),
                                             ),
-                                          ),
+                                          ],
                                         ),
-
-                                      ],
-                                    ),
-                                  ),
-
-                                ],
-                              )),
-                        ),
-                      )).toList());
-                }
-              })()),
-             /* Positioned.fill(
-                child:  Align(
-                alignment: Alignment.bottomLeft,
-                child: Container(
-
-                  width: 30,
-                  height: 30,
-                  decoration: BoxDecoration(
-                      color: Golden,
-                      borderRadius:BorderRadius.circular(50)
-
-                  ),child: Icon(Icons.refresh,size: 20,color: Colors.white,),
-
-                ),
+                                      ),
+                                    ],
+                                  )),
+                            ),
+                          )).toList(),
+                    );
+                  }
+                })(),
               ),
-              )*/
-
-
-
-         ), onRefresh: () => VM!.PullTORE(),),
-
-          SizedBox(
-            height: 10,
+            ),
+            onRefresh: () => VM!.PullTORE(),
           ),
+          SizedBox(height: 10),
           Directionality(textDirection: TextDirection.rtl, child: sliderList())
         ]),
       ],
     );
   }
+
   //Header Time
-  Widget header(todayHijri)  {
+  Widget header() {
+    HijriCalendar.setLocal('ar');
+    final todayHijri = HijriCalendar.now();
     return Row(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -224,11 +213,7 @@ class slider extends StatelessWidget {
           mainAxisSize: MainAxisSize.max,
           children: [
             Text((() {
-              if (todayHijri == null) {
-                return "--";
-              }
-
-              return '${todayHijri!.toFormat("MMMM")}';
+              return '${todayHijri.toFormat("MMMM")}';
             })(), style: Headerstyle()),
           ],
         ),
@@ -236,11 +221,7 @@ class slider extends StatelessWidget {
           mainAxisSize: MainAxisSize.max,
           children: [
             Text((() {
-              if (todayHijri == null) {
-                return "--";
-              }
-
-              return '${todayHijri!.toFormat("dd-mm-yyyy")}';
+              return '${todayHijri.toFormat("dd-MM-yyyy")}';
             })(), style: Headerstyle()),
           ],
         ),
@@ -248,11 +229,7 @@ class slider extends StatelessWidget {
           mainAxisSize: MainAxisSize.max,
           children: [
             Text((() {
-              if (todayHijri == null) {
-                return "--";
-              }
-
-              return '${todayHijri!.getDayName()}';
+              return '${todayHijri.getDayName()}';
             })(), style: Headerstyle()),
           ],
         )

@@ -20,14 +20,13 @@ import 'package:khushoo3/view_model/network/remote/dio_helper.dart';
 class HomePageVM extends Cubit<BaseStates> {
   HomePageVM() : super(InitialState()){
 
-  //  totalNotifications = 0;
    // registerNotification();
   }
 
-  late int totalNotifications;
+   int totalNotifications=0;
   final CarouselSliderController Ccontroller = CarouselSliderController();
 
-  late int currentPage = 0;
+   int currentPage = 0;
 
   static HomePageVM get(context) => BlocProvider.of(context);
 

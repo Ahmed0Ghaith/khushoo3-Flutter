@@ -31,7 +31,7 @@ class azkarslider extends StatelessWidget {
                       padding: const EdgeInsets.fromLTRB(0, 0, 0, 40),
                       child: Container(
                           child: CarouselSlider(
-                        items: Cart(context,Azkar),
+                        items: Cart(context,Azkar) ,
                         options: CarouselOptions(
                           initialPage: 0,
                           scrollDirection: Axis.horizontal,
@@ -87,7 +87,7 @@ class azkarslider extends StatelessWidget {
         });
   }
 
-  List<Widget> Cart(context, Azkar) => Azkar.map((item) => Container(
+  List<Widget> Cart(BuildContext context, List<Azkardata> azkar) => azkar.map<Widget>((item) => Container(
         width: MediaQuery.of(context).size.width - 80,
         decoration: BoxDecoration(
             border: Border.all(
