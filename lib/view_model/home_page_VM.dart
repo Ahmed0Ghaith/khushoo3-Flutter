@@ -28,10 +28,12 @@ class HomePageVM extends Cubit<BaseStates> {
   Locale currentLocale = const Locale('ar');
 
   Future<void> loadSavedLanguage() async {
-    final prefs = await SharedPreferences.getInstance();
-    final langCode = prefs.getString('app_language') ?? 'ar';
-    currentLocale = Locale(langCode);
-    emit(const ChangeLanguageState());
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final langCode = prefs.getString('app_language') ?? 'ar';
+      currentLocale = Locale(langCode);
+      emit(const ChangeLanguageState());
+    } catch (_) {}
   }
 
   Future<void> changeLanguage(String languageCode) async {

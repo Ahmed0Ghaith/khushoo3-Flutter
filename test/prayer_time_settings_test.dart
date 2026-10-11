@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:khushoo3/view_model/home_page_VM.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
   late HomePageVM viewModel;
 
   setUp(() {
