@@ -1,0 +1,48 @@
+{
+  "@@locale": "ar",
+  "appTitle": "خشوع",
+  "prayerTimes": "مواقيت الصلاة",
+  "prayerTimeSettings": "إعدادات مواقيت الصلاة",
+  "prayerTimeSettingsDescription": "التوقيت الصيفي يُحتسب تلقائيًا حسب الموقع والتاريخ. يمكنك ضبط كل وقت يدويًا بالدقائق.",
+  "noAdjustment": "بدون تعديل",
+  "minuteAdjustment": "{count} دقيقة",
+  "@minuteAdjustment": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "increaseMinute": "تقديم دقيقة",
+  "decreaseMinute": "تأخير دقيقة",
+  "reset": "إعادة ضبط",
+  "close": "إغلاق",
+  "fajr": "الفجر",
+  "sunrise": "الشروق",
+  "dhuhr": "الظهر",
+  "asr": "العصر",
+  "maghrib": "المغرب",
+  "isha": "العشاء",
+  "azkar": "الأذكار",
+  "misbaha": "السبحة",
+  "qibla": "القبلة",
+  "appInfo": "التطبيق",
+  "search": "بحث",
+  "searchHint": "بحث في الأذكار",
+  "retry": "محاولة",
+  "loading": "جاري التحميل...",
+  "locationPermissionRequired": "يجب السماح للتطبيق بالوصول للموقع لتحديد مواقيت الصلاة والقبلة",
+  "locationDenied": "تم رفض الوصول للموقع",
+  "locationDeniedForever": "تم رفض الوصول للموقع الي الابد",
+  "aboutTitle": "خشوع",
+  "aboutDescription": "تطبيق خشوع هو تطبيق اسلامي مفتوح المصدر اذا كنت مطور يمكنك مشاركه رأيك او التعديل والعمل عليه مع ذكر المصدر",
+  "yourDataTitle": "بياناتك :",
+  "yourDataDescription": "لا نجمع عنك اي بيانات فقط يتطلب التطبيق سماحيه الوصول للموقع لتحديد مواقيت الصلاه في بلدتك والبوصله لتحديد القبله.",
+  "developerTitle": "المطور :",
+  "developerDescription": "تم تصميم وتطوير هذا التطبيق في نسخته الاولي عام 2021 |1443 هـ علي يد 'احمد غيث' ونطمع في كرم الله ان يجعل هذا التطبيق صدقة جاريه علي ارواح جميع اموات المسلمين.",
+  "contactDeveloper": "للتواصل مع المطور",
+  "language": "اللغة",
+  "english": "الإنجليزية",
+  "arabic": "العربية",
+  "french": "الفرنسية"
+}

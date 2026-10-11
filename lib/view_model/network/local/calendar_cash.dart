@@ -28,7 +28,7 @@ class CalendarCash {
                       '("${element.date!.gregorian!.date}","الظهر","${element.timings!.dhuhr}", "assets/images/ZH.jpg"),'
                       '("${element.date!.gregorian!.date}","العصر","${element.timings!.asr}", "assets/images/AS.jpg"),'
                       '("${element.date!.gregorian!.date}","المغرب","${element.timings!.maghrib}", "assets/images/MA.jpg"),'
-                      '("${element.date!.gregorian!.date}","العشاء","${element.timings!.isha}", "assets/images/IS.jpg")');
+                      '("${element.date!.gregorian!.date}","العشاء","${element.timings!.isha}", "assets/images/isha.jpg")');
                   
                 });
               }

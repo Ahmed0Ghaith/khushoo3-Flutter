@@ -1,22 +1,50 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:khushoo3/Helpers/NotificationBadge.dart';
 import 'package:khushoo3/view/shared/colors.dart';
 import 'package:khushoo3/view/shared/styles.dart';
 import 'package:khushoo3/view_model/home_page_VM.dart';
 import 'package:khushoo3/view_model/states.dart';
 import 'package:hijri/hijri_calendar.dart';
+import 'package:khushoo3/gen/assets.gen.dart';
+import 'package:khushoo3/l10n/generated/app_localizations.dart';
 import 'azkarTapped.dart';
+
+String getLocalizedPrayerName(BuildContext context, String? name) {
+  final l10n = AppLocalizations.of(context);
+  if (l10n == null || name == null) return name ?? '';
+  switch (name.trim()) {
+    case 'الفجر':
+    case 'Fajr':
+      return l10n.fajr;
+    case 'الشروق':
+    case 'Sunrise':
+      return l10n.sunrise;
+    case 'الظهر':
+    case 'Dhuhr':
+      return l10n.dhuhr;
+    case 'العصر':
+    case 'Asr':
+      return l10n.asr;
+    case 'المغرب':
+    case 'Maghrib':
+      return l10n.maghrib;
+    case 'العشاء':
+    case 'Isha':
+      return l10n.isha;
+    default:
+      return name;
+  }
+}
 
 class slider extends StatelessWidget {
   final CachedImages = <String>[
-    'assets/images/FR.jpg',
-    'assets/images/SR.jpg',
-    'assets/images/ZH.jpg',
-    'assets/images/AS.jpg',
-    'assets/images/MA.jpg',
-    'assets/images/AS.jpg',
+    Assets.images.fr.path,
+    Assets.images.sr.path,
+    Assets.images.zh.path,
+    Assets.images.as.path,
+    Assets.images.ma.path,
+    Assets.images.isha.path,
   ];
 
   @override
@@ -36,12 +64,12 @@ class slider extends StatelessWidget {
     return Stack(
       children: [
         SizedBox(height: 16.0),
-      //  NotificationBadge(totalNotifications: VM!.totalNotifications),
+        //  NotificationBadge(totalNotifications: VM!.totalNotifications),
         SizedBox(height: 16.0),
         Column(mainAxisSize: MainAxisSize.max, children: [
           Padding(
             padding: const EdgeInsets.all(10.0),
-            child: header(),
+            child: header(context),
           ),
           //CarouselSliderSalatTime
           RefreshIndicator(
@@ -65,8 +93,12 @@ class slider extends StatelessWidget {
                                       BorderRadius.all(Radius.circular(10.0)),
                                   child: Stack(
                                     children: <Widget>[
-                                      Image.asset(item['Image'],
-                                          fit: BoxFit.cover, width: 1000.0),
+                                      Image.asset(
+                                          item['Image'] == 'assets/images/IS.jpg'
+                                              ? Assets.images.isha.path
+                                              : item['Image'],
+                                          fit: BoxFit.cover,
+                                          width: 1000.0),
                                       Positioned(
                                         bottom: 0.0,
                                         left: 0.0,
@@ -98,7 +130,8 @@ class slider extends StatelessWidget {
                                                   margin: const EdgeInsets.only(
                                                       left: 20.0, right: 20.0),
                                                   child: Text(
-                                                      "${item["Salat"]}",
+                                                      getLocalizedPrayerName(
+                                                          context, item["Salat"]),
                                                       style: TextStyle(
                                                           fontSize: 35,
                                                           fontFamily:
@@ -125,10 +158,8 @@ class slider extends StatelessWidget {
                                                     color: Golden,
                                                   ),
                                                   child: Text(
-                                                      item['Time']
-                                                          .toString()
-                                                          .replaceAll(
-                                                              '(EET)', ''),
+                                                      VM.displayPrayerTime(
+                                                          item),
                                                       style: TextStyle(
                                                         color: Colors.black,
                                                         fontSize: 18.0,
@@ -195,15 +226,19 @@ class slider extends StatelessWidget {
             onRefresh: () => VM!.PullTORE(),
           ),
           SizedBox(height: 10),
-          Directionality(textDirection: TextDirection.rtl, child: sliderList())
+          Directionality(
+            textDirection: Directionality.of(context),
+            child: sliderList(),
+          )
         ]),
       ],
     );
   }
 
   //Header Time
-  Widget header() {
-    HijriCalendar.setLocal('ar');
+  Widget header(BuildContext context) {
+    final langCode = Localizations.localeOf(context).languageCode;
+    HijriCalendar.setLocal(langCode == 'ar' ? 'ar' : 'en');
     final todayHijri = HijriCalendar.now();
     return Row(
       mainAxisSize: MainAxisSize.max,

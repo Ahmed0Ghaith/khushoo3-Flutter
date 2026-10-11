@@ -15,12 +15,31 @@ import 'package:sqflite/sqflite.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:khushoo3/view_model/network/remote/dio_helper.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:khushoo3/gen/assets.gen.dart';
 
 
 class HomePageVM extends Cubit<BaseStates> {
   HomePageVM() : super(InitialState()){
-
+    loadSavedLanguage();
    // registerNotification();
+  }
+
+  Locale currentLocale = const Locale('ar');
+
+  Future<void> loadSavedLanguage() async {
+    final prefs = await SharedPreferences.getInstance();
+    final langCode = prefs.getString('app_language') ?? 'ar';
+    currentLocale = Locale(langCode);
+    emit(const ChangeLanguageState());
+  }
+
+  Future<void> changeLanguage(String languageCode) async {
+    if (currentLocale.languageCode == languageCode) return;
+    currentLocale = Locale(languageCode);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('app_language', languageCode);
+    emit(const ChangeLanguageState());
   }
 
    int totalNotifications=0;
@@ -40,6 +59,15 @@ class HomePageVM extends Cubit<BaseStates> {
   List<Map> model = [];
   Database? _database;
   String? statetext;
+  final Map<String, int> prayerTimeOffsets = {
+    'الفجر': 0,
+    'الشروق': 0,
+    'الظهر': 0,
+    'العصر': 0,
+    'المغرب': 0,
+    'العشاء': 0,
+  };
+  bool _timeOffsetsLoaded = false;
 
   List<Azkardata>? azkarlist = [];
   List<Azkardata>? list = [];
@@ -49,136 +77,186 @@ class HomePageVM extends Cubit<BaseStates> {
   //Methods
 
   //CreateDataBase
-  Future <void> createDatabase()  async{
+  Future<void> createDatabase() async {
     try {
-    /*  emit(CreateDataBaseState());
-      statetext = 'تهيئة قاعدة البيانات';*/
-     await openDatabase(
+      _database = await openDatabase(
         'CalendarCash.db',
         version: 1,
-        onCreate: (_database, version) {
-          _database
-              .execute(
-                  'CREATE TABLE Salattime (HDate TEXT, HMonth TEXT, Date TEXT , Salat TEXT, Time TEXT, Image TEXT)')
-              .catchError((error) {
-        ShortToast( msg:  "'خطأ في تهية قاعدة البيانات المحلية' ",  ); /* statetext = 'خطأ في تهية قاعدة البيانات المحلية';
-            emit(ErrorCreateDataBaseState(error));*/
-          });
+        onCreate: (database, version) async {
+          await database.execute(
+            'CREATE TABLE Salattime (HDate TEXT, HMonth TEXT, Date TEXT, Salat TEXT, Time TEXT, Image TEXT)',
+          );
         },
-      ).then((value) =>
-       {
-            _database = value,
-         /*   emit(SuccessCreateDataBaseState()),
-            statetext = 'تم تهيئة قاعدة البيانات',*/
-
-          });
+        onOpen: (database) async {
+          await database.execute(
+            'CREATE TABLE IF NOT EXISTS Salattime (HDate TEXT, HMonth TEXT, Date TEXT, Salat TEXT, Time TEXT, Image TEXT)',
+          );
+        },
+      );
     } catch (e) {
       statetext = 'خطأ في تهية قاعدة البيانات المحلية';
       emit(ErrorCreateDataBaseState(e.toString()));
+      rethrow;
     }
   }
 //GetTodayData
   Future<void> getTodayData() async {
-    try
-    {
- isload=true;
+    isload = true;
     statetext = "تحميل بيانات الصلاة لليوم";
     emit(LodingTodayDataState());
-    var formatter = DateFormat('dd-MM-yyyy');
-    String formattedDate = formatter.format(DateTime.now());
-if (_database==null)
-await createDatabase();
+    try {
+      await _loadPrayerTimeOffsets();
+      if (_database == null) await createDatabase();
 
-    List value = await _database!
-        .rawQuery("SELECT * FROM Salattime  Where Date='$formattedDate' ");
-    if (value.length == 0) {
-      CurrentPosition = await _determinePosition();
-     
-      var position = CurrentPosition;
-      if (position != null) {
+      final now = DateTime.now();
+      final today = DateFormat('dd-MM-yyyy').format(now);
+      final monthPattern = '%-${now.month.toString().padLeft(2, '0')}-${now.year}';
+      final cachedMonth = await _database!.rawQuery(
+        'SELECT Date FROM Salattime WHERE Date LIKE ? LIMIT 1',
+        [monthPattern],
+      );
+      final cachedToday = await _database!.query(
+        'Salattime',
+        columns: ['Date'],
+        where: 'Date = ?',
+        whereArgs: [today],
+        limit: 1,
+      );
+      if (cachedMonth.isEmpty || cachedToday.isEmpty) {
+        CurrentPosition = await _determinePosition();
+        if (CurrentPosition == null) {
+          throw StateError('تعذر تحديد الموقع لتحميل مواقيت الصلاة');
+        }
         await insertinDatabase();
-        value = await _database!
-            .rawQuery("SELECT * FROM Salattime  Where Date='$formattedDate' ");
       }
-    }
 
-    value.forEach((element) {
-      model.add(element);
-    });
-    statetext = "تم تحميل البيانات";
+      model = await _database!.query(
+        'Salattime',
+        where: 'Date = ?',
+        whereArgs: [today],
+        orderBy: 'rowid',
+      );
+      statetext = "تم تحميل البيانات";
+      emit(SuccessTodayLoadingDataState());
+    } catch (e) {
+      statetext = "تعذر تحميل مواقيت الصلاة";
+      emit(ErrorTodayLoadingDataState(e.toString()));
+    } finally {
+      isload = false;
+    }
+  }
+
+  Future<Map<String, int>> loadPrayerTimeOffsets() async {
+    await _loadPrayerTimeOffsets();
+    return Map<String, int>.from(prayerTimeOffsets);
+  }
+
+  Future<void> _loadPrayerTimeOffsets() async {
+    if (_timeOffsetsLoaded) return;
+    final preferences = await SharedPreferences.getInstance();
+    for (final prayer in prayerTimeOffsets.keys) {
+      prayerTimeOffsets[prayer] =
+          preferences.getInt('prayer_offset_$prayer') ?? 0;
+    }
+    _timeOffsetsLoaded = true;
+  }
+
+  Future<void> savePrayerTimeOffsets(Map<String, int> offsets) async {
+    final preferences = await SharedPreferences.getInstance();
+    for (final entry in offsets.entries) {
+      if (!prayerTimeOffsets.containsKey(entry.key)) continue;
+      prayerTimeOffsets[entry.key] = entry.value;
+      await preferences.setInt('prayer_offset_${entry.key}', entry.value);
+    }
     emit(SuccessTodayLoadingDataState());
-   
-  
-  }catch(e)
-    {
+  }
 
-    }finally{
-  isload=false;
-   emit(DeniedGeoLocatorPermission(""));
-    }
-    }
+  String displayPrayerTime(Map<dynamic, dynamic> prayer) {
+    final rawTime = prayer['Time']?.toString() ?? '';
+    final match = RegExp(r'^(\d{1,2}):(\d{2})').firstMatch(rawTime);
+    if (match == null) return rawTime.replaceAll(RegExp(r'\s*\([^)]*\)'), '');
+
+    final hour = int.parse(match.group(1)!);
+    final minute = int.parse(match.group(2)!);
+    final totalMinutes =
+        (hour * 60 + minute + (prayerTimeOffsets[prayer['Salat']] ?? 0)) %
+            (24 * 60);
+    final adjustedHour = (totalMinutes ~/ 60).toString().padLeft(2, '0');
+    final adjustedMinute = (totalMinutes % 60).toString().padLeft(2, '0');
+    return '$adjustedHour:$adjustedMinute';
+  }
   //DeleteDataBase
-  void deleteDatabase()
-{
-  isload=true;
-  if (_database==null)
-    createDatabase();
-
-  _database!.rawQuery("Delete FROM Salattime ");
-  model=[];
-  emit(LodingAPIDataState());
-}
 //GetDataFromApi
   Future<void> insertinDatabase() async {
+     emit(LodingAPIDataState());
+     statetext = "جار تحميل البيانات من الانترنت...";
+     try {
+       if (_database == null) await createDatabase();
+       final position = CurrentPosition;
+       if (position == null) {
+         throw StateError('تعذر تحديد الموقع لتحميل مواقيت الصلاة');
+       }
+       final now = DateTime.now();
+       final response = await diohelper.getData(
+         url: "v1/calendar",
+         query: {
+           "latitude": '${position.latitude}',
+           "longitude": '${position.longitude}',
+           "method": "5",
+           "month": '${now.month}',
+           "year": '${now.year}',
+         },
+       );
+       final calendar = SalatModel.fromJson(response.data);
+       if (calendar.code != 200 || calendar.data.isEmpty) {
+         throw StateError('لم يتم استلام مواقيت الصلاة من الخدمة');
+       }
 
-    emit(LodingAPIDataState());
-    statetext = "جار تحميل البيانات من الانترنت...";
-     try{
-     deleteDatabase();
-  final response =  await diohelper
-        .getData(
-            url: "v1/calendar",
-            query: ({
-              "latitude": '${CurrentPosition!.latitude}',
-              "longitude": '${CurrentPosition!.latitude}',
-              "method": "5",
-              "month": '${DateTime.now().month}',
-              "year": '${DateTime.now().year}',
-            }));
-       
-              if (SalatModel.fromJson(response.data).code == 200)
-                {
-                  statetext = " تم تحميل البيانات من الانترنت";
-                  emit(SuccessAPILoadingDataState());
-                  emit(UpdateDataState());
-                  statetext = "يتم تحديث المواقيت في قاعدة البيانات";
-                  SalatModel.fromJson(response.data).data.forEach((element) {
-                    try {
-                      _database!.rawQuery(
-                          'INSERT OR REPLACE INTO Salattime(HDate,HMonth,Date, Salat, Time, Image) VALUES'
-                          '("${element.date!.hijri!.date}","${element.date!.hijri!.month}","${element.date!.gregorian!.date}","الفجر","${element.timings!.fajr}", "assets/images/FR.jpg"),'
-                          '("","","${element.date!.gregorian!.date}","الشروق","${element.timings!.sunrise}", "assets/images/SR.jpg"),'
-                          '("","","${element.date!.gregorian!.date}","الظهر","${element.timings!.dhuhr}", "assets/images/ZH.jpg"),'
-                          '("","","${element.date!.gregorian!.date}","العصر","${element.timings!.asr}", "assets/images/AS.jpg"),'
-                          '("","","${element.date!.gregorian!.date}","المغرب","${element.timings!.maghrib}", "assets/images/MA.jpg"),'
-                          '("","","${element.date!.gregorian!.date}","العشاء","${element.timings!.isha}", "assets/images/IS.jpg")');
-                    } catch (e) {
-                   
-                      statetext = "خطأ اثناء تحميل البيانات من الانترنت";
-                      emit(ErrorUpdateDataState(e.toString()));
-                    }
-                  });
-                  
-                  emit(SuccessUpdateDataState());
-                  statetext = "تم تحديث المواقيت في قاعدة البيانات";
-                }
-            
-       
-     }catch(e){
-      emit(ErrorAPILoadingDataState(e.toString()));
+       await _database!.transaction((transaction) async {
+         final monthPattern =
+             '%-${now.month.toString().padLeft(2, '0')}-${now.year}';
+         await transaction.delete(
+           'Salattime',
+           where: 'Date LIKE ?',
+           whereArgs: [monthPattern],
+         );
+         final batch = transaction.batch();
+         for (final day in calendar.data) {
+           final date = day.date?.gregorian?.date;
+           final timings = day.timings;
+           if (date == null || timings == null) continue;
+           final hijriDate = day.date?.hijri?.date ?? '';
+           final hijriMonth = day.date?.hijri?.month?.en ?? '';
+           final entries = <List<String?>>[
+             [timings.fajr, 'الفجر', 'assets/images/FR.jpg'],
+             [timings.sunrise, 'الشروق', 'assets/images/SR.jpg'],
+             [timings.dhuhr, 'الظهر', 'assets/images/ZH.jpg'],
+             [timings.asr, 'العصر', 'assets/images/AS.jpg'],
+             [timings.maghrib, 'المغرب', 'assets/images/MA.jpg'],
+             [timings.isha, 'العشاء', 'assets/images/isha.jpg'],
+           ];
+           for (final entry in entries) {
+             if (entry[0] == null) continue;
+             batch.insert('Salattime', {
+               'HDate': hijriDate,
+               'HMonth': hijriMonth,
+               'Date': date,
+               'Salat': entry[1],
+               'Time': entry[0],
+               'Image': entry[2],
+             });
+           }
+         }
+         await batch.commit(noResult: true);
+       });
+
+       statetext = "تم تحديث مواقيت هذا الشهر";
+       emit(SuccessAPILoadingDataState());
+       emit(SuccessUpdateDataState());
+     } catch (e) {
+       emit(ErrorAPILoadingDataState(e.toString()));
+       rethrow;
      }
-    
-    
   }
 //LocationData
   Future<Position?> ? _determinePosition() async {
@@ -194,28 +272,23 @@ try{
       statetext = "خطأ في الحصول علي الموقع";
       ShortToast(
           msg: "خطأ في الحصول علي الموقع",
-         
       );
 
-      return Future.error('خدمة الوصول للموقع غير مفعله');
+      throw Exception('خدمة الوصول للموقع غير مفعله');
     }
 
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       Fluttertoast.showToast(
           msg: "من فضلك قم بالسماح للوصول للموقع لتحديد مواقيت الصلاة والقبلة ",
-         
       );
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-
-       showToast(
+        showToast(
             msg: "من فضلك قم بالسماح للوصول للموقع لتحديد مواقيت الصلاة والقبلة ",
-            
         );
 
-        return Future.error(
-            'من فضلك قم بالسماح للوصول للموقع لتحديد مواقيت الصلاة والقبلة');
+        throw Exception('من فضلك قم بالسماح للوصول للموقع لتحديد مواقيت الصلاة والقبلة');
       }
     }
 
@@ -223,8 +296,7 @@ try{
       emit(DeniedForeverGeoLocatorPermission(
           'تم حظر الوصول للموقع من فضلك قم بالسماح من داخل الاعدادات'));
 
-      return Future.error(
-          'تم حظر الوصول للموقع من فضلك قم بالسماح من داخل الاعدادات');
+      throw Exception('تم حظر الوصول للموقع من فضلك قم بالسماح من داخل الاعدادات');
     }
 
     emit(SucessLocatorPermission());
@@ -243,7 +315,7 @@ try{
       statetext = 'تحميل الاذكار';
 
       emit(LodingAzkarDataState());
-      var jsonText = await rootBundle.loadString('assets/localdb/azkar.json');
+      var jsonText = await rootBundle.loadString(Assets.localdb.azkar);
       dynamic userMap = jsonDecode(jsonText);
       var azkar = Azkar.fromJson(userMap).azkar;
       azkarlist = azkar.toSet().toList();
@@ -303,7 +375,7 @@ try{
       
     
     player = AudioPlayer();
-    player!.setAsset('assets/music/click.wav');
+    player!.setAsset(Assets.music.click);
     player!.play();
     if (Counter > 1) {
       Counter--;
@@ -320,9 +392,22 @@ try{
     }
   }
   
-  Future<void> PullTORE()async  {
-        deleteDatabase();
-     await  getTodayData(); }
+  Future<void> PullTORE() async {
+    isload = true;
+    emit(LodingTodayDataState());
+    try {
+      CurrentPosition = await _determinePosition();
+      if (CurrentPosition == null) {
+        throw StateError('تعذر تحديد الموقع لتحميل مواقيت الصلاة');
+      }
+      await insertinDatabase();
+      await getTodayData();
+    } catch (e) {
+      emit(ErrorTodayLoadingDataState(e.toString()));
+    } finally {
+      isload = false;
+    }
+  }
 
   void searchstate() {
     SState = !SState;

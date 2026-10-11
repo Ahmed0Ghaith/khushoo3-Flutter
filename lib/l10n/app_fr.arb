@@ -1,0 +1,48 @@
+{
+  "@@locale": "fr",
+  "appTitle": "Khushoo",
+  "prayerTimes": "Heures de prière",
+  "prayerTimeSettings": "Paramètres des heures de prière",
+  "prayerTimeSettingsDescription": "L'heure d'été est calculée automatiquement selon la localisation et la date. Vous pouvez ajuster chaque heure manuellement en minutes.",
+  "noAdjustment": "Sans ajustement",
+  "minuteAdjustment": "{count} minute(s)",
+  "@minuteAdjustment": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "increaseMinute": "Ajouter une minute",
+  "decreaseMinute": "Retrancher une minute",
+  "reset": "Réinitialiser",
+  "close": "Fermer",
+  "fajr": "Fajr",
+  "sunrise": "Lever du soleil",
+  "dhuhr": "Dhuhr",
+  "asr": "Asr",
+  "maghrib": "Maghrib",
+  "isha": "Isha",
+  "azkar": "Adhkar",
+  "misbaha": "Chapelet",
+  "qibla": "Qibla",
+  "appInfo": "Application",
+  "search": "Rechercher",
+  "searchHint": "Rechercher dans les Adhkar",
+  "retry": "Réessayer",
+  "loading": "Chargement...",
+  "locationPermissionRequired": "L'accès à la localisation est requis pour déterminer les heures de prière et la Qibla.",
+  "locationDenied": "Accès à la localisation refusé",
+  "locationDeniedForever": "Accès à la localisation refusé définitivement",
+  "aboutTitle": "Khushoo",
+  "aboutDescription": "Khushoo est une application islamique open source. Si vous êtes développeur, vous pouvez donner votre avis, modifier et contribuer au projet en citant la source.",
+  "yourDataTitle": "Vos données :",
+  "yourDataDescription": "Nous ne collectons aucune donnée personnelle. L'application nécessite uniquement l'accès à la localisation pour calculer les heures de prière et la boussole pour la Qibla.",
+  "developerTitle": "Développeur :",
+  "developerDescription": "Conçu et développé par Ahmed Ghaith. Nous demandons à Allah de faire de cette application une aumône continue (Sadaqah Jariyah) pour tous les défunts musulmans.",
+  "contactDeveloper": "Contacter le développeur",
+  "language": "Langue",
+  "english": "Anglais",
+  "arabic": "Arabe",
+  "french": "Français"
+}

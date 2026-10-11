@@ -1,0 +1,48 @@
+{
+  "@@locale": "en",
+  "appTitle": "Khushoo",
+  "prayerTimes": "Prayer Times",
+  "prayerTimeSettings": "Prayer Time Settings",
+  "prayerTimeSettingsDescription": "Daylight saving time is calculated automatically based on location and date. You can manually adjust each prayer time by minutes.",
+  "noAdjustment": "No adjustment",
+  "minuteAdjustment": "{count} minute",
+  "@minuteAdjustment": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "increaseMinute": "Add minute",
+  "decreaseMinute": "Subtract minute",
+  "reset": "Reset",
+  "close": "Close",
+  "fajr": "Fajr",
+  "sunrise": "Sunrise",
+  "dhuhr": "Dhuhr",
+  "asr": "Asr",
+  "maghrib": "Maghrib",
+  "isha": "Isha",
+  "azkar": "Azkar",
+  "misbaha": "Misbaha",
+  "qibla": "Qibla",
+  "appInfo": "App",
+  "search": "Search",
+  "searchHint": "Search in Azkar",
+  "retry": "Retry",
+  "loading": "Loading...",
+  "locationPermissionRequired": "Location access is required to determine prayer times and Qibla direction.",
+  "locationDenied": "Location permission denied",
+  "locationDeniedForever": "Location permission permanently denied",
+  "aboutTitle": "Khushoo",
+  "aboutDescription": "Khushoo is an open-source Islamic app. If you are a developer, you can share feedback, modify, or contribute to it with proper attribution.",
+  "yourDataTitle": "Your Data:",
+  "yourDataDescription": "We do not collect any personal data. The app only requires location permission to calculate prayer times and the compass to locate the Qibla.",
+  "developerTitle": "Developer:",
+  "developerDescription": "Designed and developed by Ahmed Ghaith. We pray to Allah that this app serves as ongoing charity (Sadaqah Jariyah) for all departed Muslims.",
+  "contactDeveloper": "Contact Developer",
+  "language": "Language",
+  "english": "English",
+  "arabic": "Arabic",
+  "french": "French"
+}

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_qiblah/flutter_qiblah.dart';
 import 'package:khushoo3/view/modules/loading_indicator.dart';
 
+import 'package:khushoo3/gen/assets.gen.dart';
+
 class QiblahCompassWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -20,7 +22,7 @@ class QiblahCompassWidget extends StatelessWidget {
             Transform.rotate(
               angle: (qiblahDirection.qiblah * (pi / 180) * -1),
               alignment: Alignment.center,
-              child: Image.asset('assets/images/Qibla.png'),
+              child: Assets.images.qibla.image(),
             ),
           ],
         );

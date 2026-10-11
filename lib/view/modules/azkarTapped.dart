@@ -7,7 +7,8 @@ import 'package:khushoo3/view/shared/colors.dart';
 import 'package:khushoo3/view/shared/styles.dart';
 import 'package:khushoo3/view_model/home_page_VM.dart';
 import 'package:khushoo3/view_model/states.dart';
-
+import 'package:khushoo3/gen/assets.gen.dart';
+import 'package:khushoo3/l10n/generated/app_localizations.dart';
 
 import 'azkarSlider.dart';
 
@@ -34,6 +35,7 @@ class sliderList extends StatelessWidget {
   }
 
   Widget Body(context,VM,azkardata,azkarcategories) {
+    final l10n = AppLocalizations.of(context);
     return Expanded(
         child: Stack(
           children: [
@@ -60,19 +62,20 @@ class sliderList extends StatelessWidget {
                         labelStyle: Headerstyle(),
                         tabs: [
                           Tab(
-                            text: "الأذكار",
+                            text: l10n?.azkar ?? "الأذكار",
                           ),
                           Tab(
-                            text: "السبحة",
+                            text: l10n?.misbaha ?? "السبحة",
                           ),
                           Tab(
-                            text: "القبلة",
+                            text: l10n?.qibla ?? "القبلة",
                           ),
                           Tab(
-                            text: "التطبيق",
+                            text: l10n?.appInfo ?? "التطبيق",
                           ),
                           Container(
                             child: IconButton(
+                              tooltip: l10n?.search ?? "بحث",
                               onPressed: () {
                                 VM.currentPage == 0 ? VM.searchstate():null;
 
@@ -91,7 +94,7 @@ class sliderList extends StatelessWidget {
                     body: Container(
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                          image: AssetImage('assets/images/Background.png'),
+                          image: Assets.images.background.provider(),
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -143,7 +146,8 @@ class sliderList extends StatelessWidget {
                             .get(context)
                             .controller,
                         decoration: InputDecoration(
-                            hintText: 'بحث عن ذكر', hintStyle: LightText()),
+                            hintText: l10n?.searchHint ?? 'بحث في الأذكار',
+                            hintStyle: LightText()),
                         onChanged: ((value) {
                           HomePageVM.get(context).search(value);
                         }),

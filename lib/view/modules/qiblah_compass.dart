@@ -8,6 +8,8 @@ import 'package:khushoo3/view/modules/qibla.dart';
 import 'package:khushoo3/view_model/qibla_VM.dart';
 import 'package:khushoo3/view_model/states.dart';
 
+import 'package:khushoo3/l10n/generated/app_localizations.dart';
+
 import 'loading_indicator.dart';
 import 'location_error_widget.dart';
 
@@ -16,6 +18,7 @@ qiblaVM? VM;
 class getQibla extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return BlocProvider(
       create: (BuildContext context) => qiblaVM()
         ..startcombass()
@@ -40,7 +43,7 @@ class getQibla extends StatelessWidget {
 
                     case LocationPermission.denied:
                       Fluttertoast.showToast(
-                          msg: "يجب السماح للتطبيق بالوصول للموقع ",
+                          msg: l10n?.locationPermissionRequired ?? "يجب السماح للتطبيق بالوصول للموقع ",
                           toastLength: Toast.LENGTH_SHORT,
                           gravity: ToastGravity.BOTTOM,
                           timeInSecForIosWeb: 1,
@@ -49,12 +52,12 @@ class getQibla extends StatelessWidget {
                           fontSize: 16.0
                       );
                       return LocationErrorWidget(
-                        error: "تم رفض الوصول للموقع",
+                        error: l10n?.locationDenied ?? "تم رفض الوصول للموقع",
                         callback: VM!.checkLocationStatus,
                       );
                     case LocationPermission.deniedForever:
                       return LocationErrorWidget(
-                        error: "تم رفض الوصول للموقع الي الابد ",
+                        error: l10n?.locationDeniedForever ?? "تم رفض الوصول للموقع الي الابد ",
                         callback: VM!.checkLocationStatus,
                       );
                     // case GeolocationStatus.unknown:

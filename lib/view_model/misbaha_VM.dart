@@ -3,12 +3,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:khushoo3/view_model/states.dart';
+import 'package:khushoo3/gen/assets.gen.dart';
 
 class misbahaVM extends Cubit<BaseStates>
 {
-
-  @override
-
   misbahaVM() : super(InitialState());
 
   static misbahaVM get(Context)=>BlocProvider.of(Context);
@@ -20,7 +18,7 @@ void Clicked ()
 {
   try {
      player =AudioPlayer();
-     player!.setAsset('assets/music/click.wav');
+     player!.setAsset(Assets.music.click);
     player!.play();
     ButtonCounter++;
     Group =ButtonCounter~/33;

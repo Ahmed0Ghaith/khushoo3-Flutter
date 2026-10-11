@@ -22,21 +22,27 @@ dependencies:
   dio: ^5.9.0
   flutter_bloc: ^9.1.1
   intl: ^0.20.2
+  shared_preferences: ^2.5.3
   geolocator: ^13.0.4
   hijri: ^3.0.0
   vibration: ^2.0.0
   flutter_qiblah: ^3.1.0+1
   just_audio: ^0.10.4
-  font_awesome_flutter: ^10.9.0
+  font_awesome_flutter: ^11.0.0
   url_launcher: ^6.3.2
   firebase_messaging: ^16.0.0
   firebase_core: ^4.0.0
   overlay_support: ^2.1.0
+  flutter_localizations:
+    sdk: flutter
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_lints: ^5.0.0
   flutter_launcher_icons: ^0.14.4
+  flutter_gen_runner: ^5.13.0+1
+  build_runner: ^2.16.2
 
 # Add these dependency overrides to fix the archive package issue
 dependency_overrides:
@@ -45,7 +51,7 @@ dependency_overrides:
   image: ^4.5.4
   typed_data: ^1.4.0
   collection: ^1.18.0
-  meta: ^1.17.0
+  meta: ^1.19.0
 
 flutter_launcher_icons:
   android: "launcher_icon"
@@ -81,9 +87,14 @@ flutter:
       fonts:
         - asset: assets/fonts/ArbFONTS-GaliModern-Regular.ttf
 
+  generate: true
   uses-material-design: true
 
   assets:
     - assets/images/
     - assets/music/
     - assets/localdb/azkar.json
+
+flutter_gen:
+  output: lib/gen/
+  line_length: 80
